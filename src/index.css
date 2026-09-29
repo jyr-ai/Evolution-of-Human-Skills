@@ -1,35 +1,159 @@
 @import "tailwindcss";
 
 @theme {
-  --font-display: 'Cinzel', serif;
   --font-serif: 'Newsreader', Georgia, serif;
-  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 }
 
 :root {
   color-scheme: dark;
+  --bg: #14110e;
+  --paper: #f3ecdf;
+  --muted: #b3a594;
+  --accent: #e07a3d;
+  --brass: #e9c46a;
+}
+
+[data-station='cotton'] { --bg: #16110e; --accent: #e07a3d; }
+[data-station='law'] { --bg: #161014; --accent: #e15a4a; }
+[data-station='steel'] { --bg: #140e0c; --accent: #ff7a3c; }
+[data-station='type'] { --bg: #141311; --accent: #e6d3a3; }
+[data-station='line'] { --bg: #121416; --accent: #8ecae6; }
+[data-station='desk'] { --bg: #101416; --accent: #8fd6b0; }
+[data-station='model'] { --bg: #121410; --accent: #d6f25c; }
+
+html,
+body,
+#root {
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
 }
 
 body {
   font-family: var(--font-sans);
-  background-color: #080c14;
-  color: #f1f5f9;
-  overflow-x: hidden;
+  color: var(--paper);
+  overscroll-behavior: none;
 }
 
-/* Custom subtle scrollbar */
-::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+.stage {
+  --p: 0;
+  background:
+    radial-gradient(900px 420px at 18% 70%, color-mix(in oklab, var(--accent) 16%, transparent), transparent 70%),
+    var(--bg);
 }
-::-webkit-scrollbar-track {
-  background: #080c14;
+
+.hotspot {
+  position: absolute;
+  border-radius: 1rem;
 }
-::-webkit-scrollbar-thumb {
-  background: #1e293b;
-  border-radius: 9999px;
+
+.hotspot[aria-pressed='true'] {
+  background: color-mix(in oklab, var(--accent) 16%, transparent);
+  outline: 1px solid color-mix(in oklab, var(--accent) 70%, transparent);
 }
-::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+
+.step-btn,
+.year-btn,
+.nav-arrow,
+.task-pill {
+  border: 1px solid transparent;
+  color: var(--muted);
+  background: transparent;
+}
+
+.step-btn {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  border-radius: 999px;
+  padding: 0.4rem 0.35rem;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.step-btn.step-on,
+.year-btn.year-on,
+.nav-arrow[aria-pressed='true'] {
+  color: var(--paper);
+  border-color: color-mix(in oklab, var(--accent) 65%, transparent);
+  background: color-mix(in oklab, var(--accent) 16%, transparent);
+}
+
+.step-index {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--accent);
+}
+
+.year-btn {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  border-radius: 0.7rem;
+  padding: 0.35rem 0.1rem 0.3rem;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.year-mark {
+  height: 0.45rem;
+  width: 0.45rem;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--muted) 50%, transparent);
+}
+
+.year-on .year-mark {
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent);
+}
+
+.nav-arrow {
+  border-radius: 999px;
+  padding: 0.45rem 0.7rem;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.task-pill {
+  border-radius: 999px;
+  border-color: color-mix(in oklab, var(--paper) 25%, transparent);
+  background: color-mix(in oklab, #14110e 78%, transparent);
+  padding: 0.4rem 0.7rem;
+  font-size: 12px;
+  color: var(--paper);
+  backdrop-filter: blur(8px);
+}
+
+.task-move {
+  transform: translateX(calc(var(--p) * 2.75rem));
+}
+
+.task-stay {
+  border-style: dashed;
+}
+
+.task-on {
+  border-color: var(--accent);
+  color: var(--paper);
+  background: color-mix(in oklab, var(--accent) 22%, #14110e);
+}
+
+@media (max-width: 640px) {
+  .step-index { display: none; }
+  .year-btn { font-size: 8px; letter-spacing: 0.04em; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage { --p: 1; }
+  .stage animateTransform { display: none; }
+  .task-move { transform: translateX(2.75rem); }
 }

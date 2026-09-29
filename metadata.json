@@ -1,6 +1,6 @@
 {
-  "name": "The Great Displacement - Skill Evolution Across 4 Industrial Revolutions",
-  "description": "An interactive historical and labor economic benchmark mapping obsolescent, transformed, and emergent skills across four technological revolutions.",
+  "name": "The Machine",
+  "description": "A visual journey through how firms bought machines that took tasks out of human skill.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
