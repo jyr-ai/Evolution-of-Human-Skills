@@ -197,6 +197,19 @@ export const SkillMatrix: React.FC<SkillMatrixProps> = ({ skills, eraTitle, onSe
                       <span aria-hidden="true" className="text-slate-700">·</span>
                       <span>Cognitive: <strong className="text-slate-300">{skill.cognitiveLoad}</strong></span>
                     </div>
+
+                    {skill.workforcePrevalence && (
+                      <div className="flex items-center justify-between pt-2 border-t border-slate-800/60 text-[10px] font-mono">
+                        <span className="flex items-center gap-1 text-slate-400">
+                          <span className={`w-1.5 h-1.5 rounded-full ${isObs ? 'bg-orange-400' : isTrans ? 'bg-amber-400' : 'bg-sky-400'}`} />
+                          <span>Est. Workforce:</span>
+                          <strong className="text-white tabular-nums">{skill.workforcePrevalence.percentage}%</strong>
+                        </span>
+                        <span className="text-slate-500 group-hover:text-blue-400 transition-colors">
+                          Open Dossier →
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               );

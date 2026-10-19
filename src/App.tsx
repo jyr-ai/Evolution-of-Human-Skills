@@ -12,10 +12,13 @@ import { ScholarReferences } from './components/ScholarReferences';
 import { SkillDetailModal } from './components/SkillDetailModal';
 import { ResearchBriefModal } from './components/ResearchBriefModal';
 import { VisualLabDashboard } from './components/VisualLabDashboard';
+import { WealthOfNationsScatterChart } from './components/WealthOfNationsScatterChart';
+import { InteractiveTimelineExplorer } from './components/InteractiveTimelineExplorer';
 import { INDUSTRIAL_ERAS } from './data/industrialErasData';
 import { STREAM_DATA } from './data/skillsNetworkData';
 import { SkillItem } from './types/history';
-import { ArrowUp, BookOpen, Network, Layers, Sparkles } from 'lucide-react';
+import { ArrowUp, BookOpen, Network, Layers, Sparkles, FileSpreadsheet } from 'lucide-react';
+import { GoogleSheetsIntegrationModal } from './components/GoogleSheetsIntegrationModal';
 
 export default function App() {
   const [currentYear, setCurrentYear] = useState<number>(2024);
@@ -24,6 +27,7 @@ export default function App() {
   const [mainMode, setMainMode] = useState<'visuals' | 'archive'>('visuals');
   const [selectedSkill, setSelectedSkill] = useState<SkillItem | null>(null);
   const [isBriefOpen, setIsBriefOpen] = useState<boolean>(false);
+  const [isSheetsOpen, setIsSheetsOpen] = useState<boolean>(false);
 
   // Derive current era from currentYear
   const selectedEraId = React.useMemo(() => {
@@ -60,8 +64,12 @@ export default function App() {
     } else {
       setMainMode('archive');
       if (tab === 'timeline') {
-        const el = document.getElementById('era-hero');
+        const el = document.getElementById('interactive-timeline');
         if (el) el.scrollIntoView({ behavior: 'smooth' });
+        else {
+          const hero = document.getElementById('era-hero');
+          if (hero) hero.scrollIntoView({ behavior: 'smooth' });
+        }
       } else if (tab === 'matrix') {
         const el = document.getElementById('skill-matrix');
         if (el) el.scrollIntoView({ behavior: 'smooth' });
@@ -70,6 +78,9 @@ export default function App() {
         if (el) el.scrollIntoView({ behavior: 'smooth' });
       } else if (tab === 'societal') {
         const el = document.getElementById('societal-impact');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      } else if (tab === 'nations') {
+        const el = document.getElementById('wealth-of-nations');
         if (el) el.scrollIntoView({ behavior: 'smooth' });
       } else if (tab === 'synthesis') {
         const el = document.getElementById('macro-synthesis');
@@ -88,6 +99,7 @@ export default function App() {
         activeTab={activeTab}
         onSelectTab={handleSelectTab}
         onOpenBrief={() => setIsBriefOpen(true)}
+        onOpenSheets={() => setIsSheetsOpen(true)}
         mainMode={mainMode}
         onChangeMainMode={(mode) => setMainMode(mode)}
       />
@@ -98,6 +110,7 @@ export default function App() {
         onYearChange={(year) => setCurrentYear(year)}
         isPlaying={isPlaying}
         onTogglePlay={() => setIsPlaying(!isPlaying)}
+        onOpenFullTimeline={() => handleSelectTab('timeline')}
       />
 
       <main className="flex-1">
@@ -160,8 +173,16 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Seamless Jump to Full Historical Records Button */}
-              <div className="mt-4 flex justify-center">
+              {/* Seamless Jump to Full Historical Records & Google Sheets Buttons */}
+              <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+                <button
+                  onClick={() => setIsSheetsOpen(true)}
+                  className="px-4 py-2 text-xs font-mono uppercase tracking-wider text-emerald-300 hover:text-white bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-700/80 rounded-lg transition-colors flex items-center gap-2 shadow-sm"
+                >
+                  <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Google Sheets Sync & Export</span>
+                </button>
+
                 <button
                   onClick={() => {
                     setMainMode('archive');
@@ -201,6 +222,12 @@ export default function App() {
               />
             </div>
 
+            {/* Exhaustive Interactive Timeline: Inventions, Reactions, Social Unrest & Policy */}
+            <InteractiveTimelineExplorer
+              currentYear={currentYear}
+              onSelectYear={(year) => setCurrentYear(year)}
+            />
+
             <SkillMatrix
               skills={currentEra.skills}
               eraTitle={currentEra.title}
@@ -217,6 +244,27 @@ export default function App() {
               winners={currentEra.winners}
               eraTitle={currentEra.title}
             />
+
+            {/* Leading Country Chart Explaining Wealth of Nations & GDP at End of Each Era */}
+            <div id="wealth-of-nations" className="py-12 border-b border-slate-800 bg-[#060a14]">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div>
+                    <div className="text-xs font-mono text-orange-400 uppercase tracking-widest">
+                      Section D · Macroeconomic Wealth of Nations
+                    </div>
+                    <h2 className="text-2xl sm:text-3xl font-serif font-bold text-white tracking-tight mt-1">
+                      Leading Country Matrix: {currentEra.title}
+                    </h2>
+                  </div>
+                  <div className="text-xs font-mono text-slate-400 bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800 self-start sm:self-auto">
+                    GDP Scaling · Technological Might vs. Skill Diversity Spectrum
+                  </div>
+                </div>
+
+                <WealthOfNationsScatterChart eraId={currentEra.id} />
+              </div>
+            </div>
 
             <CrossEraComparison
               onSelectEra={(id) => {
@@ -250,16 +298,30 @@ export default function App() {
         onClose={() => setIsBriefOpen(false)}
       />
 
+      {/* Google Sheets Live Integration & Export Modal */}
+      <GoogleSheetsIntegrationModal
+        isOpen={isSheetsOpen}
+        onClose={() => setIsSheetsOpen(false)}
+      />
+
       {/* Footer */}
       <footer className="border-t border-slate-800 bg-[#060910] py-6 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-400">
           <div className="flex items-center gap-3">
-            <span className="font-serif font-bold text-slate-300">The Great Displacement</span>
+            <span className="font-serif font-bold text-slate-300">Evolution of Human Skills</span>
             <span className="text-slate-600">·</span>
             <span>Interactive Industrial Skills Web & Econometric Visualizer</span>
           </div>
 
           <div className="flex items-center gap-4">
+            <button
+              onClick={() => setIsSheetsOpen(true)}
+              className="text-emerald-400 hover:text-emerald-300 transition-colors flex items-center gap-1"
+            >
+              <FileSpreadsheet className="w-3.5 h-3.5" />
+              <span>Google Sheets</span>
+            </button>
+            <span className="text-slate-600">·</span>
             <button
               onClick={() => setIsBriefOpen(true)}
               className="text-orange-400 hover:text-orange-300 transition-colors flex items-center gap-1"

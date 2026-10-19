@@ -15,7 +15,7 @@ export const ResearchBriefModal: React.FC<ResearchBriefModalProps> = ({ isOpen, 
   if (!isOpen) return null;
 
   const generateMarkdown = () => {
-    return `# The Great Displacement: Skill Evolution Across Four Industrial Revolutions
+    return `# Evolution of Human Skills: Across Four Industrial Revolutions
 Historical & Labor Economics Dataset Grounded in Scholar Literature
 
 ## Synthesis & Common Thread
@@ -68,7 +68,7 @@ ${ENDURING_HUMAN_CORE.map(
       return JSON.stringify(
         {
           meta: {
-            title: 'The Great Displacement Dataset',
+            title: 'Evolution of Human Skills Dataset',
             erasCount: INDUSTRIAL_ERAS.length,
             enduringCoreCount: ENDURING_HUMAN_CORE.length,
           },

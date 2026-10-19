@@ -4,9 +4,11 @@ import { SkillStreamgraph } from './SkillStreamgraph';
 import { CognitivePhysicalQuadrant } from './CognitivePhysicalQuadrant';
 import { PolanyiRadarChart } from './PolanyiRadarChart';
 import { TransitionNodeBenchmark } from './TransitionNodeBenchmark';
+import { WealthOfNationsScatterChart } from './WealthOfNationsScatterChart';
+import { InteractiveTimelineExplorer } from './InteractiveTimelineExplorer';
 import { INDUSTRIAL_ERAS } from '../data/industrialErasData';
 import { NetworkRole } from '../data/skillsNetworkData';
-import { Network, Waves, Compass, ShieldCheck, ArrowRightLeft, Sparkles } from 'lucide-react';
+import { Network, Waves, Compass, ShieldCheck, ArrowRightLeft, Sparkles, Globe2, Clock } from 'lucide-react';
 
 interface VisualLabDashboardProps {
   onInspectSkillInDetail?: (roleName: string) => void;
@@ -19,7 +21,7 @@ export const VisualLabDashboard: React.FC<VisualLabDashboardProps> = ({
   activeYear,
   onYearChange,
 }) => {
-  const [activeWidget, setActiveWidget] = useState<'constellation' | 'streamgraph' | 'quadrant' | 'radar' | 'simulator'>('constellation');
+  const [activeWidget, setActiveWidget] = useState<'constellation' | 'streamgraph' | 'quadrant' | 'radar' | 'simulator' | 'nations' | 'timeline'>('constellation');
   const [selectedRole, setSelectedRole] = useState<NetworkRole | null>(null);
 
   // Pick era matching activeYear
@@ -93,6 +95,30 @@ export const VisualLabDashboard: React.FC<VisualLabDashboardProps> = ({
             </button>
 
             <button
+              onClick={() => setActiveWidget('nations')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium flex items-center gap-1.5 whitespace-nowrap transition-all ${
+                activeWidget === 'nations'
+                  ? 'bg-emerald-600 text-white shadow-md ring-1 ring-emerald-400/50'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-900'
+              }`}
+            >
+              <Globe2 className="w-3.5 h-3.5" />
+              <span>Wealth of Nations Plot</span>
+            </button>
+
+            <button
+              onClick={() => setActiveWidget('timeline')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium flex items-center gap-1.5 whitespace-nowrap transition-all ${
+                activeWidget === 'timeline'
+                  ? 'bg-orange-600 text-white shadow-md ring-1 ring-orange-400/50'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-900'
+              }`}
+            >
+              <Clock className="w-3.5 h-3.5" />
+              <span>Inventions & Unrest Timeline</span>
+            </button>
+
+            <button
               onClick={() => setActiveWidget('simulator')}
               className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium flex items-center gap-1.5 whitespace-nowrap transition-all ${
                 activeWidget === 'simulator'
@@ -130,6 +156,17 @@ export const VisualLabDashboard: React.FC<VisualLabDashboardProps> = ({
           )}
 
           {activeWidget === 'radar' && <PolanyiRadarChart />}
+
+          {activeWidget === 'nations' && (
+            <WealthOfNationsScatterChart eraId={currentEra.id} />
+          )}
+
+          {activeWidget === 'timeline' && (
+            <InteractiveTimelineExplorer
+              currentYear={activeYear}
+              onSelectYear={onYearChange}
+            />
+          )}
 
           {activeWidget === 'simulator' && (
             <TransitionNodeBenchmark

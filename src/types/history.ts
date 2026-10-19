@@ -1,5 +1,12 @@
 export type SkillCategory = 'obsolescent' | 'transformed' | 'emergent';
 
+export interface WorkforcePrevalence {
+  percentage: number; // estimated percentage of relevant working population
+  populationDescription: string; // e.g. "~240,000 workers, 1820 British Census (12.5% of manufacturing labor)"
+  peakEraYear: string; // e.g. "c. 1820"
+  censusSource: string; // academic or census reference
+}
+
 export interface SkillItem {
   id: string;
   name: string;
@@ -12,6 +19,9 @@ export interface SkillItem {
   cognitiveLoad: 'High' | 'Moderate' | 'Low';
   historicalContext: string;
   scholarNote?: string;
+  workforcePrevalence?: WorkforcePrevalence;
+  demonstratorArchetype?: 'loom' | 'steam' | 'lineman' | 'assembly' | 'cad' | 'ai' | 'chemistry' | 'code' | 'medical' | 'general' | 'telegraph' | 'telephone' | 'bio';
+  imagePath?: string;
 }
 
 export interface SocietalGroup {

@@ -1,12 +1,13 @@
 import React from 'react';
-import { BookOpen, Network, Layers, Sparkles } from 'lucide-react';
+import { BookOpen, Network, Layers, Sparkles, FileSpreadsheet } from 'lucide-react';
 
-export type NavTab = 'visual-lab' | 'timeline' | 'matrix' | 'transitions' | 'societal' | 'synthesis' | 'scholars';
+export type NavTab = 'visual-lab' | 'timeline' | 'matrix' | 'transitions' | 'societal' | 'nations' | 'synthesis' | 'scholars';
 
 interface HeaderProps {
   activeTab: NavTab;
   onSelectTab: (tab: NavTab) => void;
   onOpenBrief: () => void;
+  onOpenSheets: () => void;
   mainMode: 'visuals' | 'archive';
   onChangeMainMode: (mode: 'visuals' | 'archive') => void;
 }
@@ -15,6 +16,7 @@ export const Header: React.FC<HeaderProps> = ({
   activeTab,
   onSelectTab,
   onOpenBrief,
+  onOpenSheets,
   mainMode,
   onChangeMainMode,
 }) => {
@@ -32,7 +34,7 @@ export const Header: React.FC<HeaderProps> = ({
             className="text-base sm:text-lg font-serif tracking-tight font-semibold text-white hover:text-orange-400 transition-colors flex items-center gap-2"
           >
             <span className="w-2.5 h-2.5 rounded-full bg-orange-500 inline-block shadow-[0_0_8px_rgba(249,115,22,0.8)]" />
-            THE GREAT DISPLACEMENT
+            EVOLUTION OF HUMAN SKILLS
           </a>
         </div>
 
@@ -54,6 +56,18 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             onClick={() => {
               onChangeMainMode('archive');
+              onSelectTab('timeline');
+            }}
+            className={`transition-colors text-left hover:text-white ${
+              activeTab === 'timeline' ? 'text-orange-400 font-bold border-b-2 border-orange-500 pb-0.5' : ''
+            }`}
+          >
+            Timeline & Unrest
+          </button>
+
+          <button
+            onClick={() => {
+              onChangeMainMode('archive');
               onSelectTab('matrix');
             }}
             className={`transition-colors text-left hover:text-white ${
@@ -61,6 +75,18 @@ export const Header: React.FC<HeaderProps> = ({
             }`}
           >
             Skill Matrix
+          </button>
+
+          <button
+            onClick={() => {
+              onChangeMainMode('archive');
+              onSelectTab('nations');
+            }}
+            className={`transition-colors text-left hover:text-white ${
+              activeTab === 'nations' ? 'text-orange-400 font-bold border-b-2 border-orange-500 pb-0.5' : ''
+            }`}
+          >
+            Wealth of Nations
           </button>
 
           <button
@@ -90,6 +116,16 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Zone 3: 1-2 primary actions */}
         <div className="flex items-center gap-2.5">
+          <button
+            onClick={onOpenSheets}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono uppercase tracking-wider text-emerald-300 bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-700/60 hover:border-emerald-500 rounded-md transition-all whitespace-nowrap shadow-sm"
+            title="Open Google Sheets Integration"
+          >
+            <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-400" />
+            <span className="hidden sm:inline">Google Sheets</span>
+            <span className="sm:hidden">Sheets</span>
+          </button>
+
           <button
             onClick={onOpenBrief}
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono uppercase tracking-wider text-slate-200 bg-slate-900/90 hover:bg-slate-800 border border-slate-700 hover:border-orange-500/60 rounded-md transition-all whitespace-nowrap shadow-sm"
