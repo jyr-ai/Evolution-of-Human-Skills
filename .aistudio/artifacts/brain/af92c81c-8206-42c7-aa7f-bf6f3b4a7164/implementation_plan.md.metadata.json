@@ -1,0 +1,6 @@
+{
+  "summary": "Architecture and implementation plan explaining and providing multiple turnkey methods to embed 'Evolution of Human Skills' into any standard HTML/CSS/JavaScript website, including responsive iframe embedding with postMessage auto-resizing, query parameters for deep linking to individual widgets, and an in-app interactive Embed Code Generator modal.",
+  "updatedAt": "2026-11-06T01:45:30.316834729Z",
+  "requestFeedback": true,
+  "userFacing": true
+}
