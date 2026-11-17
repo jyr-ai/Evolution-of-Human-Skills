@@ -1,6 +1,7 @@
 import React, { useState, useRef, useMemo, useEffect } from 'react';
-import { NETWORK_DOMAINS, NETWORK_ROLES, NetworkRole, NetworkDomain } from '../data/skillsNetworkData';
-import { ZoomIn, ZoomOut, RotateCcw, Filter, Play, Pause, ChevronRight, X, Sparkles, Flame, Zap, RefreshCw, Shield } from 'lucide-react';
+import { NETWORK_DOMAINS, NETWORK_ROLES, NetworkRole } from '../data/skillsNetworkData';
+import { ZoomIn, ZoomOut, RotateCcw, Play, Pause, X, Sparkles } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 interface SkillConstellationWebProps {
   onSelectRoleDetailed?: (role: NetworkRole) => void;
@@ -11,9 +12,9 @@ interface SkillConstellationWebProps {
 export const SkillConstellationWeb: React.FC<SkillConstellationWebProps> = ({
   onSelectRoleDetailed,
   activeYear,
-  onYearChange,
 }) => {
-  // Sync selectedEra from activeYear if provided
+  const { isDark } = useTheme();
+
   const derivedEra = useMemo(() => {
     if (!activeYear) return 'all';
     if (activeYear <= 1860) return 1;
@@ -29,6 +30,7 @@ export const SkillConstellationWeb: React.FC<SkillConstellationWebProps> = ({
       setSelectedEra(derivedEra);
     }
   }, [activeYear, derivedEra]);
+
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'obsolescent' | 'transformed' | 'emergent' | 'enduring'>('all');
   const [hoveredDomain, setHoveredDomain] = useState<string | null>(null);
   const [hoveredRole, setHoveredRole] = useState<NetworkRole | null>(null);
@@ -47,7 +49,6 @@ export const SkillConstellationWeb: React.FC<SkillConstellationWebProps> = ({
   const centerY = svgHeight / 2;
   const maxRadius = Math.min(centerX, centerY) - 80;
 
-  // Era autoplay loop
   useEffect(() => {
     if (!isPlayingEra) return;
     const timer = setInterval(() => {
@@ -59,7 +60,6 @@ export const SkillConstellationWeb: React.FC<SkillConstellationWebProps> = ({
     return () => clearInterval(timer);
   }, [isPlayingEra]);
 
-  // Pan handlers
   const handleMouseDown = (e: React.MouseEvent) => {
     setIsDragging(true);
     setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
@@ -72,7 +72,6 @@ export const SkillConstellationWeb: React.FC<SkillConstellationWebProps> = ({
 
   const handleMouseUp = () => setIsDragging(false);
 
-  // Filtered roles
   const filteredRoles = useMemo(() => {
     return NETWORK_ROLES.filter((role) => {
       const matchEra = selectedEra === 'all' || role.era === selectedEra;
@@ -86,10 +85,8 @@ export const SkillConstellationWeb: React.FC<SkillConstellationWebProps> = ({
     });
   }, [selectedEra, selectedCategory, hoveredDomain, searchQuery]);
 
-  // Node position calculator
   const getRolePosition = (role: NetworkRole) => {
     const domain = NETWORK_DOMAINS.find((d) => d.id === role.domainId) || NETWORK_DOMAINS[0];
-    // Spread angle slightly by role id hash
     const hash = role.id.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
     const angleOffset = ((hash % 11) - 5) * 0.04;
     const angle = domain.angle + angleOffset;
@@ -105,28 +102,35 @@ export const SkillConstellationWeb: React.FC<SkillConstellationWebProps> = ({
   const getColorByCategory = (category: string) => {
     switch (category) {
       case 'obsolescent':
-        return '#f97316'; // Orange
+        return '#F47E2D'; // DSSG Orange
       case 'transformed':
-        return '#f59e0b'; // Amber
+        return '#d97706'; // Amber
       case 'emergent':
-        return '#38bdf8'; // Blue
+        return isDark ? '#38bdf8' : '#0056B3'; // Sky dark / DSSG Blue light
       case 'enduring':
-        return '#ffffff'; // White
+        return isDark ? '#ffffff' : '#002D72'; // Crisp White dark / DSSG Deep Blue light
       default:
-        return '#94a3b8';
+        return '#64748b';
     }
   };
 
+  const canvasBg = isDark ? '#080d17' : '#f8fafc';
+  const ringStroke = isDark ? '#1e293b' : '#cbd5e1';
+  const hubFill = isDark ? '#0b1222' : '#ffffff';
+  const nodeInnerBg = isDark ? '#080d17' : '#ffffff';
+
   return (
-    <div className="w-full bg-[#070b13] border border-slate-800 rounded-2xl overflow-hidden shadow-2xl relative flex flex-col">
+    <div className="w-full bg-white dark:bg-[#070b13] border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-lg dark:shadow-2xl relative flex flex-col transition-colors duration-200">
       {/* Top Interactive Controls Toolbar */}
-      <div className="p-4 bg-slate-950/90 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs font-mono z-20">
+      <div className="p-4 bg-slate-50 dark:bg-slate-950/90 border-b border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs font-mono z-20">
         {/* Left: Era Scrubber & Player */}
-        <div className="flex items-center gap-1.5 bg-slate-900 p-1 rounded-lg border border-slate-800">
+        <div className="flex items-center gap-1.5 bg-white dark:bg-slate-900 p-1 rounded-lg border border-slate-200 dark:border-slate-800">
           <button
             onClick={() => setIsPlayingEra(!isPlayingEra)}
             className={`px-2.5 py-1 rounded flex items-center gap-1 font-bold transition-colors ${
-              isPlayingEra ? 'bg-orange-600 text-white' : 'text-slate-300 hover:text-white'
+              isPlayingEra
+                ? 'bg-[#F47E2D] text-white'
+                : 'text-slate-700 dark:text-slate-300 hover:text-[#002D72] dark:hover:text-white'
             }`}
             title="Autoplay historical progression"
           >
@@ -134,7 +138,7 @@ export const SkillConstellationWeb: React.FC<SkillConstellationWebProps> = ({
             <span className="hidden sm:inline">{isPlayingEra ? 'Pause' : 'Play Era'}</span>
           </button>
 
-          <span className="text-slate-700">|</span>
+          <span className="text-slate-300 dark:text-slate-700">|</span>
 
           {(['all', 1, 2, 3, 4] as const).map((eraVal) => {
             const isSelected = selectedEra === eraVal;
@@ -144,8 +148,8 @@ export const SkillConstellationWeb: React.FC<SkillConstellationWebProps> = ({
                 onClick={() => setSelectedEra(eraVal)}
                 className={`px-2.5 py-1 rounded transition-all ${
                   isSelected
-                    ? 'bg-slate-800 text-white font-bold ring-1 ring-orange-500/60 shadow-sm'
-                    : 'text-slate-400 hover:text-slate-200'
+                    ? 'bg-[#002D72] dark:bg-slate-800 text-white font-bold ring-1 ring-[#0056B3] dark:ring-orange-500/60 shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-[#002D72] dark:hover:text-slate-200'
                 }`}
               >
                 {eraVal === 'all' ? 'All Eras' : `Era ${eraVal === 1 ? 'I' : eraVal === 2 ? 'II' : eraVal === 3 ? 'III' : 'IV'}`}
@@ -155,11 +159,13 @@ export const SkillConstellationWeb: React.FC<SkillConstellationWebProps> = ({
         </div>
 
         {/* Middle: Trajectory Segmented Filter */}
-        <div className="hidden lg:flex items-center gap-1 bg-slate-900 p-1 rounded-lg border border-slate-800">
+        <div className="hidden lg:flex items-center gap-1 bg-white dark:bg-slate-900 p-1 rounded-lg border border-slate-200 dark:border-slate-800">
           <button
             onClick={() => setSelectedCategory('all')}
             className={`px-2.5 py-1 rounded transition-colors ${
-              selectedCategory === 'all' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:text-white'
+              selectedCategory === 'all'
+                ? 'bg-[#002D72] dark:bg-slate-800 text-white font-semibold'
+                : 'text-slate-600 dark:text-slate-400 hover:text-[#002D72] dark:hover:text-white'
             }`}
           >
             All States
@@ -167,37 +173,45 @@ export const SkillConstellationWeb: React.FC<SkillConstellationWebProps> = ({
           <button
             onClick={() => setSelectedCategory('obsolescent')}
             className={`px-2.5 py-1 rounded flex items-center gap-1 transition-colors ${
-              selectedCategory === 'obsolescent' ? 'bg-orange-950/80 text-orange-300 ring-1 ring-orange-500/50' : 'text-slate-400 hover:text-orange-400'
+              selectedCategory === 'obsolescent'
+                ? 'bg-orange-100 dark:bg-orange-950/80 text-orange-800 dark:text-orange-300 ring-1 ring-[#F47E2D]/60 font-semibold'
+                : 'text-slate-600 dark:text-slate-400 hover:text-[#F47E2D]'
             }`}
           >
-            <span className="w-2 h-2 rounded-full bg-orange-500 inline-block" />
+            <span className="w-2 h-2 rounded-full bg-[#F47E2D] inline-block" />
             <span>Obsolescent</span>
           </button>
           <button
             onClick={() => setSelectedCategory('transformed')}
             className={`px-2.5 py-1 rounded flex items-center gap-1 transition-colors ${
-              selectedCategory === 'transformed' ? 'bg-amber-950/80 text-amber-300 ring-1 ring-amber-500/50' : 'text-slate-400 hover:text-amber-400'
+              selectedCategory === 'transformed'
+                ? 'bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 ring-1 ring-amber-500/50 font-semibold'
+                : 'text-slate-600 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-400'
             }`}
           >
-            <span className="w-2 h-2 rounded-full bg-amber-400 inline-block" />
+            <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" />
             <span>Transformed</span>
           </button>
           <button
             onClick={() => setSelectedCategory('emergent')}
             className={`px-2.5 py-1 rounded flex items-center gap-1 transition-colors ${
-              selectedCategory === 'emergent' ? 'bg-blue-950/80 text-blue-300 ring-1 ring-blue-500/50' : 'text-slate-400 hover:text-blue-400'
+              selectedCategory === 'emergent'
+                ? 'bg-blue-100 dark:bg-blue-950/80 text-[#002D72] dark:text-blue-300 ring-1 ring-[#0056B3]/50 font-semibold'
+                : 'text-slate-600 dark:text-slate-400 hover:text-[#0056B3] dark:hover:text-blue-400'
             }`}
           >
-            <span className="w-2 h-2 rounded-full bg-sky-400 inline-block" />
+            <span className="w-2 h-2 rounded-full bg-[#0056B3] dark:bg-sky-400 inline-block" />
             <span>Emergent</span>
           </button>
           <button
             onClick={() => setSelectedCategory('enduring')}
             className={`px-2.5 py-1 rounded flex items-center gap-1 transition-colors ${
-              selectedCategory === 'enduring' ? 'bg-slate-800 text-white ring-1 ring-white/60' : 'text-slate-400 hover:text-white'
+              selectedCategory === 'enduring'
+                ? 'bg-[#002D72] dark:bg-slate-800 text-white ring-1 ring-[#002D72] dark:ring-white/60 font-semibold'
+                : 'text-slate-600 dark:text-slate-400 hover:text-[#002D72] dark:hover:text-white'
             }`}
           >
-            <span className="w-2 h-2 rounded-full bg-white inline-block shadow-[0_0_6px_#fff]" />
+            <span className="w-2 h-2 rounded-full bg-[#002D72] dark:bg-white inline-block" />
             <span>Enduring Core</span>
           </button>
         </div>
@@ -209,20 +223,20 @@ export const SkillConstellationWeb: React.FC<SkillConstellationWebProps> = ({
             placeholder="Search job or task..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-36 sm:w-44 px-2.5 py-1 bg-slate-900 border border-slate-800 rounded text-slate-200 placeholder-slate-500 text-xs focus:outline-none focus:ring-1 focus:ring-orange-500"
+            className="w-36 sm:w-44 px-2.5 py-1 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded text-slate-900 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 text-xs focus:outline-none focus:ring-1 focus:ring-[#0056B3] dark:focus:ring-orange-500"
           />
 
-          <div className="flex items-center gap-1 bg-slate-900 p-0.5 rounded border border-slate-800">
+          <div className="flex items-center gap-1 bg-white dark:bg-slate-900 p-0.5 rounded border border-slate-200 dark:border-slate-800">
             <button
               onClick={() => setZoom((z) => Math.min(z + 0.2, 2.2))}
-              className="p-1 text-slate-400 hover:text-white"
+              className="p-1 text-slate-500 dark:text-slate-400 hover:text-[#002D72] dark:hover:text-white"
               title="Zoom In"
             >
               <ZoomIn className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => setZoom((z) => Math.max(z - 0.2, 0.6))}
-              className="p-1 text-slate-400 hover:text-white"
+              className="p-1 text-slate-500 dark:text-slate-400 hover:text-[#002D72] dark:hover:text-white"
               title="Zoom Out"
             >
               <ZoomOut className="w-3.5 h-3.5" />
@@ -232,7 +246,7 @@ export const SkillConstellationWeb: React.FC<SkillConstellationWebProps> = ({
                 setZoom(1);
                 setPan({ x: 0, y: 0 });
               }}
-              className="p-1 text-slate-400 hover:text-white"
+              className="p-1 text-slate-500 dark:text-slate-400 hover:text-[#002D72] dark:hover:text-white"
               title="Reset View"
             >
               <RotateCcw className="w-3.5 h-3.5" />
@@ -247,37 +261,31 @@ export const SkillConstellationWeb: React.FC<SkillConstellationWebProps> = ({
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
-        className="relative w-full h-[580px] sm:h-[680px] overflow-hidden cursor-grab active:cursor-grabbing bg-[#080d17] select-none"
+        className="relative w-full h-[580px] sm:h-[680px] overflow-hidden cursor-grab active:cursor-grabbing bg-slate-50 dark:bg-[#080d17] select-none transition-colors duration-200"
       >
-        {/* Top-Left Legend Overlay (Identical layout to the uploaded image) */}
-        <div className="absolute top-4 left-4 z-10 p-3.5 bg-slate-950/80 backdrop-blur-md rounded-xl border border-slate-800 text-[11px] font-mono text-slate-300 max-w-[280px] shadow-xl pointer-events-none">
-          <div className="text-xs font-bold text-white mb-1.5 flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-orange-400" />
+        {/* Top-Left Legend Overlay */}
+        <div className="absolute top-4 left-4 z-10 p-3.5 bg-white/90 dark:bg-slate-950/85 backdrop-blur-md rounded-xl border border-slate-200 dark:border-slate-800 text-[11px] font-mono text-slate-700 dark:text-slate-300 max-w-[290px] shadow-lg pointer-events-none">
+          <div className="text-xs font-bold text-[#002D72] dark:text-white mb-1.5 flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-[#F47E2D]" />
             <span>Industrial Skills Web</span>
           </div>
-          <div className="space-y-1 text-slate-400">
+          <div className="space-y-1 text-slate-500 dark:text-slate-400">
             <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full border border-orange-500 inline-block" />
-              <span className="w-2.5 h-2.5 rotate-45 border border-sky-400 inline-block" />
+              <span className="w-3 h-3 rounded-full border border-[#F47E2D] inline-block" />
+              <span className="w-2.5 h-2.5 rotate-45 border border-[#0056B3] dark:border-sky-400 inline-block" />
               <span>shape = job / task benchmark</span>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-slate-500 inline-block" />
-              <span className="w-2 h-2 rounded-full bg-orange-400 inline-block" />
-              <span className="w-2 h-2 rounded-full bg-sky-400 inline-block" />
-              <span>dot intensity = exposure / score</span>
-            </div>
-            <div className="flex items-center gap-2 pt-1 border-t border-slate-800 text-[10px]">
-              <span className="text-orange-400">🟧 Obsolescent</span>
-              <span className="text-amber-400">🟨 Transformed</span>
-              <span className="text-sky-400">🟦 Emergent</span>
-              <span className="text-white">⚪ Core</span>
+            <div className="flex items-center gap-2 pt-1 border-t border-slate-200 dark:border-slate-800 text-[10px] flex-wrap">
+              <span className="text-[#F47E2D] font-semibold">● Obsolescent</span>
+              <span className="text-amber-600 dark:text-amber-400 font-semibold">● Transformed</span>
+              <span className="text-[#0056B3] dark:text-sky-400 font-semibold">● Emergent</span>
+              <span className="text-[#002D72] dark:text-white font-semibold">● Core</span>
             </div>
           </div>
         </div>
 
         {/* Bottom Interaction Instruction Hint */}
-        <div className="absolute bottom-3 left-4 z-10 text-[11px] font-mono text-slate-400 pointer-events-none bg-slate-950/60 px-3 py-1 rounded-md border border-slate-850">
+        <div className="absolute bottom-3 left-4 z-10 text-[11px] font-mono text-slate-600 dark:text-slate-400 pointer-events-none bg-white/85 dark:bg-slate-950/75 px-3 py-1 rounded-md border border-slate-200 dark:border-slate-800 shadow-xs">
           hover a group or role to isolate it · drag = pan · click node = inspect
         </div>
 
@@ -293,9 +301,9 @@ export const SkillConstellationWeb: React.FC<SkillConstellationWebProps> = ({
         >
           <defs>
             <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.3" />
-              <stop offset="70%" stopColor="#f97316" stopOpacity="0.1" />
-              <stop offset="100%" stopColor="#080d17" stopOpacity="0" />
+              <stop offset="0%" stopColor={isDark ? '#3b82f6' : '#0056B3'} stopOpacity={isDark ? '0.3' : '0.18'} />
+              <stop offset="70%" stopColor="#F47E2D" stopOpacity={isDark ? '0.1' : '0.06'} />
+              <stop offset="100%" stopColor={canvasBg} stopOpacity="0" />
             </radialGradient>
             <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
               <feGaussianBlur stdDeviation="3" result="blur" />
@@ -311,10 +319,10 @@ export const SkillConstellationWeb: React.FC<SkillConstellationWebProps> = ({
               cy={centerY}
               r={maxRadius * factor}
               fill="none"
-              stroke="#1e293b"
+              stroke={ringStroke}
               strokeDasharray="3 6"
               strokeWidth="1"
-              opacity="0.4"
+              opacity={isDark ? '0.45' : '0.8'}
             />
           ))}
 
@@ -336,23 +344,22 @@ export const SkillConstellationWeb: React.FC<SkillConstellationWebProps> = ({
                   y1={centerY}
                   x2={x2}
                   y2={y2}
-                  stroke={isHovered ? domain.color : '#1e293b'}
+                  stroke={isHovered ? domain.color : ringStroke}
                   strokeWidth={isHovered ? 2 : 1}
-                  opacity={hoveredDomain && !isHovered ? 0.15 : 0.6}
+                  opacity={hoveredDomain && !isHovered ? 0.15 : isDark ? 0.6 : 0.85}
                   style={{ transition: 'stroke 0.2s ease, stroke-width 0.2s ease' }}
                 />
 
-                {/* Domain Title Label along outer perimeter */}
                 <text
                   x={centerX + Math.cos(domain.angle) * (maxRadius + 18)}
                   y={centerY + Math.sin(domain.angle) * (maxRadius + 18)}
-                  fill={isHovered ? '#ffffff' : domain.color}
+                  fill={isHovered ? (isDark ? '#ffffff' : '#002D72') : isDark ? domain.color : '#334155'}
                   fontSize="10"
                   fontFamily="monospace"
-                  fontWeight={isHovered ? 'bold' : 'normal'}
+                  fontWeight={isHovered ? 'bold' : '600'}
                   textAnchor={Math.cos(domain.angle) > 0 ? 'start' : 'end'}
                   dominantBaseline="middle"
-                  className="transition-colors drop-shadow"
+                  className="transition-colors"
                 >
                   {domain.name}
                 </text>
@@ -366,15 +373,15 @@ export const SkillConstellationWeb: React.FC<SkillConstellationWebProps> = ({
             cx={centerX}
             cy={centerY}
             r={38}
-            fill="#0b1222"
-            stroke="#f97316"
-            strokeWidth="1.5"
+            fill={hubFill}
+            stroke="#F47E2D"
+            strokeWidth="2"
             strokeDasharray="4 2"
           />
           <text
             x={centerX}
             y={centerY - 6}
-            fill="#ffffff"
+            fill={isDark ? '#ffffff' : '#002D72'}
             fontSize="10"
             fontFamily="serif"
             fontWeight="bold"
@@ -386,7 +393,7 @@ export const SkillConstellationWeb: React.FC<SkillConstellationWebProps> = ({
           <text
             x={centerX}
             y={centerY + 8}
-            fill="#f97316"
+            fill="#F47E2D"
             fontSize="10"
             fontFamily="serif"
             fontWeight="bold"
@@ -419,7 +426,6 @@ export const SkillConstellationWeb: React.FC<SkillConstellationWebProps> = ({
                 className="cursor-pointer transition-opacity"
                 opacity={isDimmed ? 0.2 : 1}
               >
-                {/* Ray to center */}
                 <line
                   x1={centerX}
                   y1={centerY}
@@ -428,10 +434,9 @@ export const SkillConstellationWeb: React.FC<SkillConstellationWebProps> = ({
                   stroke={color}
                   strokeWidth={isActive ? 1.5 : 0.8}
                   strokeDasharray="2 3"
-                  opacity={isActive || isHovered ? 0.8 : 0.3}
+                  opacity={isActive || isHovered ? 0.85 : isDark ? 0.3 : 0.45}
                 />
 
-                {/* Sub-task constellation dots radiating around the role */}
                 {role.tasks.map((task, tIdx) => {
                   const taskAngle = angle + ((tIdx - (role.tasks.length - 1) / 2) * 0.12);
                   const taskR = maxRadius * (role.distanceFactor + 0.08);
@@ -441,17 +446,15 @@ export const SkillConstellationWeb: React.FC<SkillConstellationWebProps> = ({
 
                   return (
                     <g key={tIdx}>
-                      {/* Filament connecting task to parent role */}
                       <line
                         x1={x}
                         y1={y}
                         x2={tx}
                         y2={ty}
-                        stroke={isTaskReplaced ? '#f97316' : '#38bdf8'}
+                        stroke={isTaskReplaced ? '#F47E2D' : isDark ? '#38bdf8' : '#0056B3'}
                         strokeWidth={0.6}
-                        opacity={isActive || isHovered ? 0.7 : 0.25}
+                        opacity={isActive || isHovered ? 0.75 : 0.35}
                       />
-                      {/* Micro task diamond or dot */}
                       {isTaskReplaced ? (
                         <rect
                           x={tx - 2.5}
@@ -459,15 +462,23 @@ export const SkillConstellationWeb: React.FC<SkillConstellationWebProps> = ({
                           width="5"
                           height="5"
                           transform={`rotate(45 ${tx} ${ty})`}
-                          fill={isTaskReplaced ? '#ea580c' : '#0284c7'}
-                          opacity={0.8}
+                          fill="#F47E2D"
+                          opacity={0.85}
                         />
                       ) : (
                         <circle
                           cx={tx}
                           cy={ty}
                           r={task.status === 'enduring' ? 3 : 2}
-                          fill={task.status === 'enduring' ? '#ffffff' : '#38bdf8'}
+                          fill={
+                            task.status === 'enduring'
+                              ? isDark
+                                ? '#ffffff'
+                                : '#002D72'
+                              : isDark
+                              ? '#38bdf8'
+                              : '#0056B3'
+                          }
                           opacity={0.9}
                         />
                       )}
@@ -475,32 +486,39 @@ export const SkillConstellationWeb: React.FC<SkillConstellationWebProps> = ({
                   );
                 })}
 
-                {/* Primary Role Node Outer Ring */}
                 <circle
                   cx={x}
                   cy={y}
                   r={isActive ? 10 : 7}
-                  fill="#080d17"
+                  fill={nodeInnerBg}
                   stroke={color}
-                  strokeWidth={isActive ? 2.5 : 1.5}
-                  filter={isActive || isHovered ? 'url(#glow)' : undefined}
+                  strokeWidth={isActive ? 2.5 : 1.75}
+                  filter={isDark && (isActive || isHovered) ? 'url(#glow)' : undefined}
                 />
-                {/* Primary Role Node Center Core */}
-                <circle
-                  cx={x}
-                  cy={y}
-                  r={isActive ? 4 : 2.5}
-                  fill={color}
-                />
+                <circle cx={x} cy={y} r={isActive ? 4 : 2.5} fill={color} />
 
-                {/* Role Name Text Label */}
                 <text
                   x={x + (Math.cos(angle) >= 0 ? 12 : -12)}
                   y={y + 3}
-                  fill={isActive ? '#ffffff' : isHovered ? '#f1f5f9' : '#cbd5e1'}
+                  fill={
+                    isActive
+                      ? isDark
+                        ? '#ffffff'
+                        : '#002D72'
+                      : isHovered
+                      ? isDark
+                        ? '#f1f5f9'
+                        : '#0f172a'
+                      : isDark
+                      ? '#cbd5e1'
+                      : '#334155'
+                  }
                   fontSize={isActive ? '11' : '9'}
                   fontFamily="sans-serif"
-                  fontWeight={isActive ? '600' : '400'}
+                  fontWeight={isActive ? '700' : '500'}
+                  stroke={canvasBg}
+                  strokeWidth="2.5"
+                  paintOrder="stroke fill"
                   textAnchor={Math.cos(angle) >= 0 ? 'start' : 'end'}
                   className="pointer-events-none"
                 >
@@ -511,88 +529,86 @@ export const SkillConstellationWeb: React.FC<SkillConstellationWebProps> = ({
           })}
         </svg>
 
-        {/* Live Role Inspection Drawer (Positioned right inside the canvas widget - NO SCROLLING REQUIRED!) */}
+        {/* Live Role Inspection Drawer */}
         {activeRole && (
-          <div className="absolute top-4 right-4 z-20 w-80 bg-slate-950/95 backdrop-blur-md border border-slate-800 rounded-xl p-4 shadow-2xl space-y-3 animate-in fade-in slide-in-from-right-2 duration-150">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-800">
+          <div className="absolute top-4 right-4 z-20 w-80 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-xl space-y-3 animate-in fade-in slide-in-from-right-2 duration-150">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
               <div className="flex items-center gap-1.5 text-xs font-mono">
                 <span
                   className="w-2.5 h-2.5 rounded-full inline-block"
                   style={{ backgroundColor: getColorByCategory(activeRole.category) }}
                 />
-                <span className="font-bold text-white uppercase tracking-wider">
+                <span className="font-bold text-[#002D72] dark:text-white uppercase tracking-wider">
                   {activeRole.category}
                 </span>
-                <span className="text-slate-600">·</span>
-                <span className="text-slate-400">Era {activeRole.era}</span>
+                <span className="text-slate-400">·</span>
+                <span className="text-slate-500 dark:text-slate-400">Era {activeRole.era}</span>
               </div>
               <button
                 onClick={() => setActiveRole(null)}
-                className="text-slate-500 hover:text-white"
+                className="text-slate-400 hover:text-slate-900 dark:hover:text-white"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <div>
-              <h4 className="text-base font-serif font-bold text-white">
+              <h4 className="text-base font-serif font-bold text-[#002D72] dark:text-white">
                 {activeRole.name}
               </h4>
-              <p className="text-xs text-slate-400 font-sans mt-0.5">
-                Displaced or Shaped By: <strong className="text-slate-200">{activeRole.displacingTech}</strong>
+              <p className="text-xs text-slate-600 dark:text-slate-400 font-sans mt-0.5">
+                Displaced or Shaped By: <strong className="text-slate-900 dark:text-slate-200">{activeRole.displacingTech}</strong>
               </p>
             </div>
 
-            {/* Cognitive vs Physical Load Meters */}
-            <div className="space-y-2 pt-2 border-t border-slate-800/80 text-xs font-mono">
+            <div className="space-y-2 pt-2 border-t border-slate-200 dark:border-slate-800 text-xs font-mono">
               <div>
-                <div className="flex justify-between text-[11px] text-slate-400 mb-1">
+                <div className="flex justify-between text-[11px] text-slate-500 dark:text-slate-400 mb-1">
                   <span>Physical Muscular Load:</span>
-                  <span className="text-orange-400">{activeRole.physicalLoad}%</span>
+                  <span className="text-[#F47E2D] font-bold">{activeRole.physicalLoad}%</span>
                 </div>
-                <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                <div className="w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
                   <div
-                    className="bg-orange-500 h-full rounded-full"
+                    className="bg-[#F47E2D] h-full rounded-full"
                     style={{ width: `${activeRole.physicalLoad}%` }}
                   />
                 </div>
               </div>
 
               <div>
-                <div className="flex justify-between text-[11px] text-slate-400 mb-1">
+                <div className="flex justify-between text-[11px] text-slate-500 dark:text-slate-400 mb-1">
                   <span>Cognitive / Symbolic Load:</span>
-                  <span className="text-sky-400">{activeRole.cognitiveLoad}%</span>
+                  <span className="text-[#0056B3] dark:text-sky-400 font-bold">{activeRole.cognitiveLoad}%</span>
                 </div>
-                <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                <div className="w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
                   <div
-                    className="bg-sky-400 h-full rounded-full"
+                    className="bg-[#0056B3] dark:bg-sky-400 h-full rounded-full"
                     style={{ width: `${activeRole.cognitiveLoad}%` }}
                   />
                 </div>
               </div>
             </div>
 
-            {/* Task Decomposition Evidence List */}
-            <div className="pt-2 border-t border-slate-800/80 space-y-1.5">
-              <div className="text-[11px] font-mono text-slate-400 uppercase tracking-wider">
-                Deconstructed Task Tasks & Exposure:
+            <div className="pt-2 border-t border-slate-200 dark:border-slate-800 space-y-1.5">
+              <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                Deconstructed Tasks & Exposure:
               </div>
               <div className="space-y-1 max-h-36 overflow-y-auto pr-1">
                 {activeRole.tasks.map((task, idx) => (
                   <div
                     key={idx}
-                    className="flex items-center justify-between text-xs p-1.5 rounded bg-slate-900 border border-slate-800/60"
+                    className="flex items-center justify-between text-xs p-1.5 rounded bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60"
                   >
-                    <span className="text-slate-200 truncate">{task.name}</span>
+                    <span className="text-slate-800 dark:text-slate-200 truncate">{task.name}</span>
                     <span
                       className={`text-[10px] font-mono font-bold shrink-0 ml-2 px-1.5 py-0.5 rounded ${
                         task.status === 'replaced'
-                          ? 'bg-orange-950 text-orange-400'
+                          ? 'bg-orange-100 dark:bg-orange-950 text-[#F47E2D]'
                           : task.status === 'created'
-                          ? 'bg-blue-950 text-sky-400'
+                          ? 'bg-blue-100 dark:bg-blue-950 text-[#0056B3] dark:text-sky-400'
                           : task.status === 'enduring'
-                          ? 'bg-slate-800 text-white'
-                          : 'bg-amber-950 text-amber-300'
+                          ? 'bg-[#002D72] dark:bg-slate-800 text-white'
+                          : 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300'
                       }`}
                     >
                       {task.status}

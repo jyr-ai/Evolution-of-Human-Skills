@@ -4,17 +4,20 @@ import { BookOpen, GraduationCap, ExternalLink, Bookmark } from 'lucide-react';
 
 export const ScholarReferences: React.FC = () => {
   return (
-    <section id="scholar-references" className="py-12 border-b border-slate-800 bg-[#080c14]">
+    <section
+      id="scholar-references"
+      className="py-12 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-[#080c14] transition-colors duration-200"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <div className="flex items-center gap-2 text-xs font-mono text-orange-400 uppercase tracking-widest mb-1">
+          <div className="flex items-center gap-2 text-xs font-mono font-semibold text-[#F47E2D] uppercase tracking-widest mb-1">
             <GraduationCap className="w-4 h-4" />
             <span>Economic History & Scholarly Grounding</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-serif font-bold text-white tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-serif font-bold text-[#002D72] dark:text-white tracking-tight text-balance">
             Academic Bibliography & Research Grounding
           </h2>
-          <p className="text-sm text-slate-400 max-w-3xl mt-1">
+          <p className="text-sm text-slate-600 dark:text-slate-400 max-w-3xl mt-1">
             Grounded in peer-reviewed economic history and labor economics literature mapping technological displacement, skill-biased change, and the task-based framework.
           </p>
         </div>
@@ -24,28 +27,28 @@ export const ScholarReferences: React.FC = () => {
           {SCHOLAR_CITATIONS.map((citation, idx) => (
             <div
               key={idx}
-              className="p-5 rounded-xl border border-slate-800 bg-slate-900/40 hover:bg-slate-900/80 transition-all flex flex-col justify-between space-y-3"
+              className="p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40 hover:bg-white dark:hover:bg-slate-900/80 shadow-xs hover:shadow-lg dssg-card-hover flex flex-col justify-between space-y-3"
             >
               <div>
-                <div className="flex items-center justify-between text-xs font-mono text-slate-400 mb-1.5">
-                  <span className="font-semibold text-slate-300">{citation.author}</span>
+                <div className="flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400 mb-1.5">
+                  <span className="font-semibold text-slate-700 dark:text-slate-300">{citation.author}</span>
                   <span className="tabular-nums">({citation.year})</span>
                 </div>
 
-                <h3 className="text-sm font-serif font-bold text-white leading-snug">
+                <h3 className="text-sm font-serif font-bold text-[#002D72] dark:text-white leading-snug">
                   "{citation.title}"
                 </h3>
 
-                <div className="text-xs text-blue-400/90 font-mono mt-1">
+                <div className="text-xs text-[#0056B3] dark:text-blue-400/90 font-mono mt-1 font-medium">
                   {citation.journal}
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-slate-800 text-xs text-slate-300 space-y-1">
-                <span className="font-mono text-[11px] text-slate-400 uppercase tracking-wider block">
+              <div className="pt-3 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300 space-y-1">
+                <span className="font-mono text-[11px] text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
                   Core Theoretical Takeaway:
                 </span>
-                <p className="leading-relaxed font-sans text-slate-300">
+                <p className="leading-relaxed font-sans text-slate-700 dark:text-slate-300">
                   {citation.keyTakeaway}
                 </p>
               </div>

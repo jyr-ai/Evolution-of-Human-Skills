@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { ShieldCheck, Eye, Layers } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 interface RadarAxis {
   label: string;
@@ -14,35 +15,36 @@ const AXES: RadarAxis[] = [
   { label: 'Empathy & Persuasion', angle: -Math.PI / 2 + (8 * Math.PI) / 5 },
 ];
 
-const ERA_RADAR_DATA: Record<number, { name: string; color: string; values: number[] }> = {
-  1: {
-    name: 'Era I: Steam & Mechanization',
-    color: '#ea580c',
-    values: [85, 20, 15, 10, 10], // High rule codifiability of rotation, negligible cognitive/dexterity
-  },
-  2: {
-    name: 'Era II: Fordism & Electrification',
-    color: '#f59e0b',
-    values: [92, 40, 25, 12, 12], // Standardized assembly jigs and line speed
-  },
-  3: {
-    name: 'Era III: Digital Computation',
-    color: '#0284c7',
-    values: [98, 75, 45, 15, 15], // Routine calculation, databases, basic robotics
-  },
-  4: {
-    name: 'Era IV: Generative AI & Agents',
-    color: '#38bdf8',
-    values: [99, 94, 55, 20, 20], // Massive breakthrough in symbolic reasoning, still struggles with accountability & empathy
-  },
-};
-
 export const PolanyiRadarChart: React.FC = () => {
-  const [activeEras, setActiveEras] = useState<number[]>([1, 4]); // default compare Era 1 vs Era 4
+  const { isDark } = useTheme();
+  const [activeEras, setActiveEras] = useState<number[]>([1, 4]);
+
+  const eraRadarData: Record<number, { name: string; color: string; values: number[] }> = {
+    1: {
+      name: 'Era I: Steam & Mechanization',
+      color: '#F47E2D',
+      values: [85, 20, 15, 10, 10],
+    },
+    2: {
+      name: 'Era II: Fordism & Electrification',
+      color: '#d97706',
+      values: [92, 40, 25, 12, 12],
+    },
+    3: {
+      name: 'Era III: Digital Computation',
+      color: '#0056B3',
+      values: [98, 75, 45, 15, 15],
+    },
+    4: {
+      name: 'Era IV: Generative AI & Agents',
+      color: isDark ? '#38bdf8' : '#002D72',
+      values: [99, 94, 55, 20, 20],
+    },
+  };
 
   const size = 360;
   const center = size / 2;
-  const radius = size * 0.38;
+  const radius = size * 0.36;
 
   const toggleEra = (eraNum: number) => {
     if (activeEras.includes(eraNum)) {
@@ -69,21 +71,20 @@ export const PolanyiRadarChart: React.FC = () => {
   };
 
   return (
-    <div className="w-full bg-[#070b13] border border-slate-800 rounded-2xl p-5 shadow-2xl space-y-4">
+    <div className="w-full bg-white dark:bg-[#070b13] border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-lg dark:shadow-2xl space-y-4 transition-colors duration-200">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-800 gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800 gap-3">
         <div>
-          <div className="flex items-center gap-2 text-xs font-mono text-orange-400 uppercase tracking-widest">
+          <div className="flex items-center gap-2 text-xs font-mono font-semibold text-[#F47E2D] uppercase tracking-widest">
             <ShieldCheck className="w-3.5 h-3.5" />
             <span>The Polanyi-Moravec Radar</span>
           </div>
-          <h3 className="text-lg font-serif font-bold text-white mt-0.5">
+          <h3 className="text-lg font-serif font-bold text-[#002D72] dark:text-white mt-0.5">
             Machine Displacement Reach vs. Human Boundary
           </h3>
         </div>
 
-        {/* Era Comparison Toggles */}
-        <div className="flex items-center gap-1.5 bg-slate-900 p-1 rounded-lg border border-slate-800 text-xs font-mono">
+        <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-900 p-1 rounded-lg border border-slate-200 dark:border-slate-800 text-xs font-mono">
           {[1, 2, 3, 4].map((eraNum) => {
             const isChecked = activeEras.includes(eraNum);
             return (
@@ -92,12 +93,12 @@ export const PolanyiRadarChart: React.FC = () => {
                 onClick={() => toggleEra(eraNum)}
                 className={`px-2.5 py-1 rounded transition-all font-bold ${
                   isChecked
-                    ? 'bg-slate-800 text-white shadow-sm ring-1'
-                    : 'text-slate-500 hover:text-slate-300'
+                    ? 'bg-white dark:bg-slate-800 shadow-xs ring-1'
+                    : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
                 }`}
                 style={{
-                  borderColor: isChecked ? ERA_RADAR_DATA[eraNum].color : undefined,
-                  color: isChecked ? ERA_RADAR_DATA[eraNum].color : undefined,
+                  borderColor: isChecked ? eraRadarData[eraNum].color : undefined,
+                  color: isChecked ? eraRadarData[eraNum].color : undefined,
                 }}
               >
                 Era {eraNum === 1 ? 'I' : eraNum === 2 ? 'II' : eraNum === 3 ? 'III' : 'IV'}
@@ -108,10 +109,9 @@ export const PolanyiRadarChart: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-        {/* Radar SVG Viewport (7 cols) */}
-        <div className="md:col-span-7 flex justify-center py-2">
-          <svg width={size} height={size} className="select-none">
-            {/* Concentric Guide Webs */}
+        {/* Radar SVG Viewport */}
+        <div className="md:col-span-7 flex justify-center py-2 bg-slate-50/70 dark:bg-transparent rounded-xl border border-slate-100 dark:border-transparent">
+          <svg viewBox={`0 0 ${size} ${size}`} className="w-full max-w-[380px] h-auto select-none">
             {[20, 40, 60, 80, 100].map((level) => {
               const points = AXES.map((_, idx) => {
                 const { x, y } = getPoint(idx, level);
@@ -122,15 +122,14 @@ export const PolanyiRadarChart: React.FC = () => {
                   key={level}
                   points={points.join(' ')}
                   fill="none"
-                  stroke="#1e293b"
+                  stroke={isDark ? '#1e293b' : '#cbd5e1'}
                   strokeWidth="1"
                   strokeDasharray="2 4"
                 />
               );
             })}
 
-            {/* Radial Spokes */}
-            {AXES.map((axis, idx) => {
+            {AXES.map((_, idx) => {
               const { x, y } = getPoint(idx, 100);
               return (
                 <line
@@ -139,15 +138,14 @@ export const PolanyiRadarChart: React.FC = () => {
                   y1={center}
                   x2={x}
                   y2={y}
-                  stroke="#334155"
+                  stroke={isDark ? '#334155' : '#94a3b8'}
                   strokeWidth="1"
                 />
               );
             })}
 
-            {/* Active Polygons */}
             {activeEras.map((eraNum) => {
-              const data = ERA_RADAR_DATA[eraNum];
+              const data = eraRadarData[eraNum];
               const path = generatePolygonPath(data.values);
               return (
                 <g key={eraNum}>
@@ -156,10 +154,9 @@ export const PolanyiRadarChart: React.FC = () => {
                     fill={data.color}
                     fillOpacity="0.2"
                     stroke={data.color}
-                    strokeWidth="2"
+                    strokeWidth="2.2"
                     className="transition-all duration-300"
                   />
-                  {/* Point dots */}
                   {data.values.map((val, idx) => {
                     const { x, y } = getPoint(idx, val);
                     return (
@@ -169,7 +166,7 @@ export const PolanyiRadarChart: React.FC = () => {
                         cy={y}
                         r={3.5}
                         fill={data.color}
-                        stroke="#070b13"
+                        stroke={isDark ? '#070b13' : '#ffffff'}
                         strokeWidth="1.5"
                       />
                     );
@@ -178,17 +175,17 @@ export const PolanyiRadarChart: React.FC = () => {
               );
             })}
 
-            {/* Axis Labels */}
             {AXES.map((axis, idx) => {
-              const { x, y } = getPoint(idx, 118);
+              const { x, y } = getPoint(idx, 120);
               return (
                 <text
                   key={idx}
                   x={x}
                   y={y}
-                  fill="#cbd5e1"
+                  fill={isDark ? '#cbd5e1' : '#0f172a'}
                   fontSize="10"
                   fontFamily="monospace"
+                  fontWeight="600"
                   textAnchor="middle"
                   dominantBaseline="middle"
                 >
@@ -199,13 +196,13 @@ export const PolanyiRadarChart: React.FC = () => {
           </svg>
         </div>
 
-        {/* Narrative & Explanation Wing (5 cols) */}
+        {/* Narrative & Explanation Wing */}
         <div className="md:col-span-5 space-y-3 text-xs font-mono">
-          <div className="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-2">
-            <span className="text-orange-400 font-bold uppercase tracking-wider block">
+          <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 space-y-2">
+            <span className="text-[#F47E2D] font-bold uppercase tracking-wider block">
               The Cognitive Inversion Boundary:
             </span>
-            <p className="text-slate-300 leading-relaxed font-sans text-xs">
+            <p className="text-slate-700 dark:text-slate-300 leading-relaxed font-sans text-xs">
               Notice how <strong>Era I & II</strong> machines expanded along the top spoke (rigid rule codification), while <strong>Era IV AI</strong> surges rightward into high-level symbolic synthesis (94%), yet halts abruptly at the bottom and left spokes: moral accountability and genuine emotional cohesion cannot be delegated to statistical weight matrices.
             </p>
           </div>
@@ -214,17 +211,19 @@ export const PolanyiRadarChart: React.FC = () => {
             {activeEras.map((eraNum) => (
               <div
                 key={eraNum}
-                className="p-2.5 rounded-lg bg-slate-950 border border-slate-800/80 flex items-center justify-between"
+                className="p-2.5 rounded-lg bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 flex items-center justify-between shadow-xs"
               >
                 <div className="flex items-center gap-2">
                   <span
                     className="w-2.5 h-2.5 rounded-full inline-block"
-                    style={{ backgroundColor: ERA_RADAR_DATA[eraNum].color }}
+                    style={{ backgroundColor: eraRadarData[eraNum].color }}
                   />
-                  <span className="text-white font-bold">{ERA_RADAR_DATA[eraNum].name}</span>
+                  <span className="text-[#002D72] dark:text-white font-bold font-sans">
+                    {eraRadarData[eraNum].name}
+                  </span>
                 </div>
-                <span className="text-slate-400">
-                  Symbolic: {ERA_RADAR_DATA[eraNum].values[1]}%
+                <span className="text-slate-600 dark:text-slate-400">
+                  Symbolic: {eraRadarData[eraNum].values[1]}%
                 </span>
               </div>
             ))}

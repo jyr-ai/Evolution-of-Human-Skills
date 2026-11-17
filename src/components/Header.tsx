@@ -1,5 +1,6 @@
 import React from 'react';
-import { BookOpen, Network, Layers, Sparkles, FileSpreadsheet } from 'lucide-react';
+import { BookOpen, Network, FileSpreadsheet, Code2, Sun, Moon } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 export type NavTab = 'visual-lab' | 'timeline' | 'matrix' | 'transitions' | 'societal' | 'nations' | 'synthesis' | 'scholars';
 
@@ -8,6 +9,7 @@ interface HeaderProps {
   onSelectTab: (tab: NavTab) => void;
   onOpenBrief: () => void;
   onOpenSheets: () => void;
+  onOpenEmbed: () => void;
   mainMode: 'visuals' | 'archive';
   onChangeMainMode: (mode: 'visuals' | 'archive') => void;
 }
@@ -17,12 +19,15 @@ export const Header: React.FC<HeaderProps> = ({
   onSelectTab,
   onOpenBrief,
   onOpenSheets,
+  onOpenEmbed,
   mainMode,
   onChangeMainMode,
 }) => {
+  const { isDark, toggleTheme } = useTheme();
+
   return (
-    <header className="sticky top-0 z-40 bg-[#080c14]/90 backdrop-blur-md border-b border-slate-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <header className="sticky top-0 z-40 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm transition-colors duration-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
         {/* Zone 1: Single text element wordmark */}
         <div className="flex items-center gap-3">
           <a
@@ -31,26 +36,27 @@ export const Header: React.FC<HeaderProps> = ({
               e.preventDefault();
               onSelectTab('visual-lab');
             }}
-            className="text-base sm:text-lg font-serif tracking-tight font-semibold text-white hover:text-orange-400 transition-colors flex items-center gap-2"
+            className="text-base sm:text-lg font-serif tracking-tight font-bold text-[#002D72] dark:text-white hover:text-[#F47E2D] dark:hover:text-[#F47E2D] transition-colors whitespace-nowrap shrink-0"
           >
-            <span className="w-2.5 h-2.5 rounded-full bg-orange-500 inline-block shadow-[0_0_8px_rgba(249,115,22,0.8)]" />
-            EVOLUTION OF HUMAN SKILLS
+            Evolution of Human Skills
           </a>
         </div>
 
         {/* Zone 2: Navigation Links */}
-        <nav className="hidden md:flex items-center gap-5 text-xs font-mono uppercase tracking-wider text-slate-300">
+        <nav className="hidden lg:flex items-center gap-5 text-xs font-sans font-medium text-slate-600 dark:text-slate-300">
           <button
             onClick={() => {
               onChangeMainMode('visuals');
               onSelectTab('visual-lab');
             }}
-            className={`flex items-center gap-1.5 transition-colors text-left hover:text-white ${
-              mainMode === 'visuals' ? 'text-orange-400 font-bold border-b-2 border-orange-500 pb-0.5' : ''
+            className={`flex items-center gap-1.5 py-1 transition-colors text-left whitespace-nowrap shrink-0 ${
+              mainMode === 'visuals'
+                ? 'text-[#002D72] dark:text-[#F47E2D] font-semibold border-b-2 border-[#F47E2D]'
+                : 'hover:text-[#002D72] dark:hover:text-white'
             }`}
           >
-            <Network className="w-3.5 h-3.5 text-orange-400" />
-            <span>Interactive Work Map & Lab</span>
+            <Network className="w-3.5 h-3.5 text-[#F47E2D]" />
+            <span>Work Map & Lab</span>
           </button>
 
           <button
@@ -58,11 +64,13 @@ export const Header: React.FC<HeaderProps> = ({
               onChangeMainMode('archive');
               onSelectTab('timeline');
             }}
-            className={`transition-colors text-left hover:text-white ${
-              activeTab === 'timeline' ? 'text-orange-400 font-bold border-b-2 border-orange-500 pb-0.5' : ''
+            className={`py-1 transition-colors text-left whitespace-nowrap shrink-0 ${
+              mainMode === 'archive' && activeTab === 'timeline'
+                ? 'text-[#002D72] dark:text-[#F47E2D] font-semibold border-b-2 border-[#F47E2D]'
+                : 'hover:text-[#002D72] dark:hover:text-white'
             }`}
           >
-            Timeline & Unrest
+            Timeline
           </button>
 
           <button
@@ -70,8 +78,10 @@ export const Header: React.FC<HeaderProps> = ({
               onChangeMainMode('archive');
               onSelectTab('matrix');
             }}
-            className={`transition-colors text-left hover:text-white ${
-              mainMode === 'archive' && activeTab === 'matrix' ? 'text-orange-400 font-bold border-b-2 border-orange-500 pb-0.5' : ''
+            className={`py-1 transition-colors text-left whitespace-nowrap shrink-0 ${
+              mainMode === 'archive' && activeTab === 'matrix'
+                ? 'text-[#002D72] dark:text-[#F47E2D] font-semibold border-b-2 border-[#F47E2D]'
+                : 'hover:text-[#002D72] dark:hover:text-white'
             }`}
           >
             Skill Matrix
@@ -82,11 +92,13 @@ export const Header: React.FC<HeaderProps> = ({
               onChangeMainMode('archive');
               onSelectTab('nations');
             }}
-            className={`transition-colors text-left hover:text-white ${
-              activeTab === 'nations' ? 'text-orange-400 font-bold border-b-2 border-orange-500 pb-0.5' : ''
+            className={`py-1 transition-colors text-left whitespace-nowrap shrink-0 ${
+              mainMode === 'archive' && activeTab === 'nations'
+                ? 'text-[#002D72] dark:text-[#F47E2D] font-semibold border-b-2 border-[#F47E2D]'
+                : 'hover:text-[#002D72] dark:hover:text-white'
             }`}
           >
-            Wealth of Nations
+            Nations GDP
           </button>
 
           <button
@@ -94,11 +106,13 @@ export const Header: React.FC<HeaderProps> = ({
               onChangeMainMode('archive');
               onSelectTab('transitions');
             }}
-            className={`transition-colors text-left hover:text-white ${
-              activeTab === 'transitions' ? 'text-orange-400 font-bold border-b-2 border-orange-500 pb-0.5' : ''
+            className={`py-1 transition-colors text-left whitespace-nowrap shrink-0 ${
+              mainMode === 'archive' && activeTab === 'transitions'
+                ? 'text-[#002D72] dark:text-[#F47E2D] font-semibold border-b-2 border-[#F47E2D]'
+                : 'hover:text-[#002D72] dark:hover:text-white'
             }`}
           >
-            Transition Nodes
+            Transitions
           </button>
 
           <button
@@ -106,33 +120,67 @@ export const Header: React.FC<HeaderProps> = ({
               onChangeMainMode('archive');
               onSelectTab('synthesis');
             }}
-            className={`transition-colors text-left hover:text-white ${
-              activeTab === 'synthesis' ? 'text-orange-400 font-bold border-b-2 border-orange-500 pb-0.5' : ''
+            className={`py-1 transition-colors text-left whitespace-nowrap shrink-0 ${
+              mainMode === 'archive' && activeTab === 'synthesis'
+                ? 'text-[#002D72] dark:text-[#F47E2D] font-semibold border-b-2 border-[#F47E2D]'
+                : 'hover:text-[#002D72] dark:hover:text-white'
             }`}
           >
-            AI Inversion & Core
+            AI Core
           </button>
         </nav>
 
-        {/* Zone 3: 1-2 primary actions */}
-        <div className="flex items-center gap-2.5">
+        {/* Zone 3: Actions & Light/Dark Toggle */}
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            onClick={onOpenEmbed}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-[#002D72] dark:text-blue-300 bg-slate-100 dark:bg-blue-950/70 hover:bg-slate-200 dark:hover:bg-blue-900 border border-slate-200 dark:border-blue-700/60 rounded-lg transition-all whitespace-nowrap shrink-0"
+            title="Get HTML/CSS/JS Embed Code"
+          >
+            <Code2 className="w-3.5 h-3.5 text-[#0056B3] dark:text-blue-400" />
+            <span className="hidden sm:inline">Embed</span>
+          </button>
+
           <button
             onClick={onOpenSheets}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono uppercase tracking-wider text-emerald-300 bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-700/60 hover:border-emerald-500 rounded-md transition-all whitespace-nowrap shadow-sm"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/80 hover:bg-emerald-100 dark:hover:bg-emerald-900 border border-emerald-200 dark:border-emerald-700/60 rounded-lg transition-all whitespace-nowrap shrink-0"
             title="Open Google Sheets Integration"
           >
-            <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-400" />
-            <span className="hidden sm:inline">Google Sheets</span>
-            <span className="sm:hidden">Sheets</span>
+            <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+            <span className="hidden xl:inline">Google Sheets</span>
+            <span className="xl:hidden">Sheets</span>
           </button>
 
           <button
             onClick={onOpenBrief}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono uppercase tracking-wider text-slate-200 bg-slate-900/90 hover:bg-slate-800 border border-slate-700 hover:border-orange-500/60 rounded-md transition-all whitespace-nowrap shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg dssg-btn-primary whitespace-nowrap shrink-0 shadow-sm"
           >
-            <BookOpen className="w-3.5 h-3.5 text-orange-400" />
-            <span className="hidden sm:inline">Research Brief</span>
-            <span className="sm:hidden">Brief</span>
+            <BookOpen className="w-3.5 h-3.5" />
+            <span className="hidden xl:inline">Research Brief</span>
+            <span className="xl:hidden">Brief</span>
+          </button>
+
+          {/* Light / Dark Mode Toggle */}
+          <button
+            onClick={toggleTheme}
+            type="button"
+            role="switch"
+            aria-checked={isDark}
+            aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+            title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:border-[#0056B3] dark:hover:border-[#F47E2D] hover:bg-slate-100 dark:hover:bg-slate-800 transition-all whitespace-nowrap shrink-0"
+          >
+            {isDark ? (
+              <>
+                <Sun className="w-3.5 h-3.5 text-[#F47E2D]" />
+                <span className="hidden md:inline">Light</span>
+              </>
+            ) : (
+              <>
+                <Moon className="w-3.5 h-3.5 text-[#002D72]" />
+                <span className="hidden md:inline">Dark</span>
+              </>
+            )}
           </button>
         </div>
       </div>

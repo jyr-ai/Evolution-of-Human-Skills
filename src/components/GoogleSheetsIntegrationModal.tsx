@@ -244,31 +244,39 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="relative w-full max-w-4xl max-h-[92vh] flex flex-col bg-[#0c121e] border border-slate-700 rounded-xl shadow-2xl overflow-hidden text-slate-100">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/60 dark:bg-black/80 backdrop-blur-sm animate-in fade-in duration-200"
+      onClick={onClose}
+    >
+      <div
+        className="relative w-full max-w-4xl max-h-[92vh] flex flex-col bg-white dark:bg-[#0c121e] border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl overflow-hidden text-slate-900 dark:text-slate-100"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="h-1 w-full bg-gradient-to-r from-[#002D72] via-emerald-600 to-[#F47E2D]" />
+
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-[#080d17]">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#080d17]">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+            <div className="w-9 h-9 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
               <FileSpreadsheet className="w-5 h-5" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-base sm:text-lg font-serif font-bold text-white tracking-wide">
+              <div className="flex flex-wrap items-center gap-2">
+                <h2 className="text-base sm:text-lg font-serif font-bold text-[#002D72] dark:text-white tracking-wide">
                   Google Sheets Integration
                 </h2>
-                <span className="px-2 py-0.5 text-[10px] font-mono tracking-wider uppercase rounded bg-emerald-950 text-emerald-300 border border-emerald-700/50">
-                  Live Sync
+                <span className="text-[11px] font-mono font-semibold text-emerald-700 dark:text-emerald-400">
+                  · Live Sync
                 </span>
               </div>
-              <p className="text-xs text-slate-400 font-sans">
+              <p className="text-xs text-slate-600 dark:text-slate-400 font-sans">
                 Export benchmark datasets, browse your Google Drive sheets, and append skills data
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
+            className="p-1.5 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-slate-800 rounded-lg transition-colors"
             aria-label="Close modal"
           >
             <X className="w-5 h-5" />
@@ -276,14 +284,14 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
         </div>
 
         {/* Auth Bar */}
-        <div className="px-6 py-3 bg-slate-900/60 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">
+        <div className="px-6 py-3 bg-slate-100/70 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
           {user ? (
             <div className="flex items-center gap-3">
               {user.photoURL ? (
                 <img
                   src={user.photoURL}
                   alt={user.displayName || 'User'}
-                  className="w-7 h-7 rounded-full border border-slate-600"
+                  className="w-7 h-7 rounded-full border border-slate-300 dark:border-slate-600"
                 />
               ) : (
                 <div className="w-7 h-7 rounded-full bg-emerald-600 flex items-center justify-center text-xs font-bold text-white">
@@ -291,13 +299,13 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
                 </div>
               )}
               <div className="text-xs">
-                <span className="text-slate-300 font-medium">Connected as </span>
-                <span className="text-emerald-400 font-mono font-medium">{user.email}</span>
+                <span className="text-slate-600 dark:text-slate-300 font-medium">Connected as </span>
+                <span className="text-emerald-700 dark:text-emerald-400 font-mono font-semibold">{user.email}</span>
               </div>
             </div>
           ) : (
-            <div className="text-xs text-slate-400 flex items-center gap-2">
-              <Info className="w-4 h-4 text-amber-400" />
+            <div className="text-xs text-slate-600 dark:text-slate-400 flex items-center gap-2">
+              <Info className="w-4 h-4 text-[#F47E2D] shrink-0" />
               <span>Connect your Google account with permission to access and create Google Sheets.</span>
             </div>
           )}
@@ -306,7 +314,7 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
             {user ? (
               <button
                 onClick={handleSignOut}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 rounded transition-colors whitespace-nowrap shrink-0"
               >
                 <LogOut className="w-3.5 h-3.5" />
                 Sign Out
@@ -316,7 +324,7 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
               <button
                 onClick={handleSignIn}
                 disabled={isLoggingIn}
-                className="inline-flex items-center gap-2.5 px-4 py-2 text-xs font-medium bg-white hover:bg-slate-100 text-slate-800 rounded shadow-md transition-all active:scale-95 disabled:opacity-60"
+                className="inline-flex items-center gap-2.5 px-4 py-2 text-xs font-medium bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 dark:border-transparent rounded shadow-sm transition-all active:scale-95 disabled:opacity-60 whitespace-nowrap shrink-0"
               >
                 <svg className="w-4 h-4" viewBox="0 0 48 48">
                   <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
@@ -331,21 +339,21 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
         </div>
 
         {authError && (
-          <div className="mx-6 mt-3 p-3 text-xs bg-red-950/60 border border-red-800 text-red-200 rounded flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
+          <div className="mx-6 mt-3 p-3 text-xs bg-red-50 dark:bg-red-950/60 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 rounded flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 text-red-600 dark:text-red-400 shrink-0" />
             <span>{authError}</span>
           </div>
         )}
 
         {generalError && (
-          <div className="mx-6 mt-3 p-3 text-xs bg-amber-950/60 border border-amber-800 text-amber-200 rounded flex items-center justify-between gap-2">
+          <div className="mx-6 mt-3 p-3 text-xs bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200 rounded flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+              <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
               <span>{generalError}</span>
             </div>
             <button
               onClick={() => setGeneralError(null)}
-              className="text-xs text-amber-400 hover:underline"
+              className="text-xs text-amber-700 dark:text-amber-400 hover:underline font-semibold"
             >
               Dismiss
             </button>
@@ -353,13 +361,13 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
         )}
 
         {/* Modal Navigation Tabs */}
-        <div className="flex border-b border-slate-800 bg-[#0a0f19] px-6">
+        <div className="flex overflow-x-auto border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#0a0f19] px-6">
           <button
             onClick={() => setActiveTab('export')}
-            className={`py-3 px-4 text-xs font-mono uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all ${
+            className={`py-3 px-4 text-xs font-mono uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all whitespace-nowrap shrink-0 ${
               activeTab === 'export'
-                ? 'border-emerald-500 text-emerald-400 font-semibold'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                ? 'border-emerald-600 dark:border-emerald-500 text-emerald-700 dark:text-emerald-400 font-semibold'
+                : 'border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
             }`}
           >
             <Download className="w-3.5 h-3.5" />
@@ -367,10 +375,10 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
           </button>
           <button
             onClick={() => setActiveTab('browse')}
-            className={`py-3 px-4 text-xs font-mono uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all ${
+            className={`py-3 px-4 text-xs font-mono uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all whitespace-nowrap shrink-0 ${
               activeTab === 'browse'
-                ? 'border-emerald-500 text-emerald-400 font-semibold'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                ? 'border-emerald-600 dark:border-emerald-500 text-emerald-700 dark:text-emerald-400 font-semibold'
+                : 'border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
             }`}
           >
             <FolderOpen className="w-3.5 h-3.5" />
@@ -378,10 +386,10 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
           </button>
           <button
             onClick={() => setActiveTab('append')}
-            className={`py-3 px-4 text-xs font-mono uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all ${
+            className={`py-3 px-4 text-xs font-mono uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all whitespace-nowrap shrink-0 ${
               activeTab === 'append'
-                ? 'border-emerald-500 text-emerald-400 font-semibold'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                ? 'border-emerald-600 dark:border-emerald-500 text-emerald-700 dark:text-emerald-400 font-semibold'
+                : 'border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
             }`}
           >
             <PlusCircle className="w-3.5 h-3.5" />
@@ -393,17 +401,19 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {!user ? (
             <div className="text-center py-12 px-4 max-w-md mx-auto space-y-4">
-              <div className="w-16 h-16 mx-auto rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+              <div className="w-16 h-16 mx-auto rounded-2xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
                 <FileSpreadsheet className="w-8 h-8" />
               </div>
-              <h3 className="text-lg font-serif font-bold text-white">Google Sheets Integration</h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <h3 className="text-lg font-serif font-bold text-[#002D72] dark:text-white">
+                Google Sheets Integration
+              </h3>
+              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                 Connect your Google account to export benchmark datasets across all 4 Industrial Eras directly to Google Sheets, view your existing spreadsheets, and seamlessly sync skill records.
               </p>
               <button
                 onClick={handleSignIn}
                 disabled={isLoggingIn}
-                className="inline-flex items-center gap-2.5 px-5 py-2.5 text-xs font-medium bg-white hover:bg-slate-100 text-slate-800 rounded-lg shadow-md transition-all active:scale-95 disabled:opacity-60"
+                className="inline-flex items-center gap-2.5 px-5 py-2.5 text-xs font-medium bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 dark:border-transparent rounded-lg shadow-md transition-all active:scale-95 disabled:opacity-60"
               >
                 <svg className="w-4 h-4" viewBox="0 0 48 48">
                   <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
@@ -419,67 +429,67 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
               {/* TAB 1: EXPORT */}
               {activeTab === 'export' && (
                 <div className="space-y-6">
-                  <div className="bg-slate-900/60 border border-slate-800 rounded-lg p-5 space-y-4">
+                  <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-lg p-5 space-y-4">
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-                          <Database className="w-4 h-4 text-emerald-400" />
+                        <h3 className="text-sm font-semibold text-[#002D72] dark:text-white flex items-center gap-2">
+                          <Database className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                           Export Benchmark to Google Sheets
                         </h3>
-                        <p className="text-xs text-slate-400 mt-1">
+                        <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
                           Creates a new spreadsheet in your Google Drive with 3 organized tabs populated with researched historical and AI-era labor data:
                         </p>
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-                      <div className="p-3 bg-slate-950/70 border border-slate-800 rounded-md">
-                        <span className="font-mono text-emerald-400 font-semibold block mb-1">
+                      <div className="p-3 bg-white dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-md">
+                        <span className="font-mono text-emerald-700 dark:text-emerald-400 font-semibold block mb-1">
                           1. Skills Matrix (All Eras)
                         </span>
-                        <p className="text-slate-400 text-[11px]">
+                        <p className="text-slate-600 dark:text-slate-400 text-[11px]">
                           Complete dossier of obsolescent, transformed, and emergent skills with displacement drivers and cognitive/physical shifts.
                         </p>
                       </div>
-                      <div className="p-3 bg-slate-950/70 border border-slate-800 rounded-md">
-                        <span className="font-mono text-emerald-400 font-semibold block mb-1">
+                      <div className="p-3 bg-white dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-md">
+                        <span className="font-mono text-emerald-700 dark:text-emerald-400 font-semibold block mb-1">
                           2. Wealth of Nations GDP & Risk
                         </span>
-                        <p className="text-slate-400 text-[11px]">
+                        <p className="text-slate-600 dark:text-slate-400 text-[11px]">
                           Country trajectory scatter data across Eras 1–4, showing tech might, skill diversification, GDP per capita, and cognitive/manual machine risks.
                         </p>
                       </div>
-                      <div className="p-3 bg-slate-950/70 border border-slate-800 rounded-md">
-                        <span className="font-mono text-emerald-400 font-semibold block mb-1">
+                      <div className="p-3 bg-white dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-md">
+                        <span className="font-mono text-emerald-700 dark:text-emerald-400 font-semibold block mb-1">
                           3. Industrial Eras Overview
                         </span>
-                        <p className="text-slate-400 text-[11px]">
+                        <p className="text-slate-600 dark:text-slate-400 text-[11px]">
                           Macro-economic milestones from the First Industrial Revolution through the Cognitive Automation / AI Inversion era.
                         </p>
                       </div>
                     </div>
 
                     <div className="space-y-2 pt-2">
-                      <label className="block text-xs font-mono uppercase text-slate-400">
+                      <label className="block text-xs font-mono uppercase text-slate-600 dark:text-slate-400 font-semibold">
                         Spreadsheet Title in Google Drive
                       </label>
                       <input
                         type="text"
                         value={exportTitle}
                         onChange={(e) => setExportTitle(e.target.value)}
-                        className="w-full px-3 py-2 text-xs bg-slate-950 border border-slate-700 rounded text-slate-200 focus:outline-none focus:border-emerald-500 font-mono"
+                        className="w-full px-3 py-2 text-xs bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-slate-200 focus:outline-none focus:border-emerald-600 dark:focus:border-emerald-500 font-mono"
                         placeholder="Spreadsheet title..."
                       />
                     </div>
 
-                    <div className="pt-2 flex items-center justify-between">
-                      <span className="text-xs text-slate-400">
+                    <div className="pt-2 flex flex-wrap items-center justify-between gap-3">
+                      <span className="text-xs text-slate-500 dark:text-slate-400">
                         Will be created in your root Google Drive directory with private access.
                       </span>
                       <button
                         onClick={() => setShowExportConfirm(true)}
                         disabled={isExporting || !exportTitle.trim()}
-                        className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg shadow-md transition-all active:scale-95 disabled:opacity-50"
+                        className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg shadow-md transition-all active:scale-95 disabled:opacity-50 whitespace-nowrap shrink-0"
                       >
                         {isExporting ? (
                           <>
@@ -498,16 +508,16 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
 
                   {/* Export Success Banner */}
                   {exportedSheet && (
-                    <div className="p-4 bg-emerald-950/40 border border-emerald-600/60 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="p-4 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-600/60 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
+                        <div className="w-9 h-9 rounded-full bg-emerald-100 dark:bg-emerald-500/20 flex items-center justify-center text-emerald-700 dark:text-emerald-400 shrink-0">
                           <CheckCircle2 className="w-5 h-5" />
                         </div>
                         <div>
-                          <div className="text-sm font-semibold text-emerald-200">
+                          <div className="text-sm font-semibold text-emerald-900 dark:text-emerald-200">
                             Spreadsheet Created Successfully!
                           </div>
-                          <div className="text-xs text-emerald-400/80 font-mono">
+                          <div className="text-xs text-emerald-700 dark:text-emerald-400/80 font-mono">
                             ID: {exportedSheet.id}
                           </div>
                         </div>
@@ -516,7 +526,7 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
                         href={exportedSheet.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-lg transition-colors whitespace-nowrap shadow"
+                        className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors whitespace-nowrap shadow shrink-0"
                       >
                         <ExternalLink className="w-3.5 h-3.5" />
                         Open in Google Sheets
@@ -531,15 +541,17 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="text-sm font-semibold text-white">Your Google Drive Spreadsheets</h3>
-                      <p className="text-xs text-slate-400">
+                      <h3 className="text-sm font-semibold text-[#002D72] dark:text-white">
+                        Your Google Drive Spreadsheets
+                      </h3>
+                      <p className="text-xs text-slate-600 dark:text-slate-400">
                         Select a spreadsheet to inspect tabs, structure, and read live cell ranges
                       </p>
                     </div>
                     <button
                       onClick={() => loadUserSheets()}
                       disabled={isLoadingSheets}
-                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono text-slate-300 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded transition-colors"
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded transition-colors whitespace-nowrap shrink-0"
                     >
                       <RefreshCw className={`w-3.5 h-3.5 ${isLoadingSheets ? 'animate-spin' : ''}`} />
                       Refresh
@@ -547,18 +559,18 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
                   </div>
 
                   {isLoadingSheets ? (
-                    <div className="text-center py-8 text-xs text-slate-400 font-mono flex items-center justify-center gap-2">
-                      <RefreshCw className="w-4 h-4 animate-spin text-emerald-400" />
+                    <div className="text-center py-8 text-xs text-slate-500 dark:text-slate-400 font-mono flex items-center justify-center gap-2">
+                      <RefreshCw className="w-4 h-4 animate-spin text-emerald-600 dark:text-emerald-400" />
                       Loading spreadsheets from your Google Drive...
                     </div>
                   ) : sheetsList.length === 0 ? (
-                    <div className="p-8 text-center bg-slate-900/40 border border-slate-800 rounded-lg text-xs text-slate-400">
+                    <div className="p-8 text-center bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-lg text-xs text-slate-600 dark:text-slate-400">
                       No Google Sheets found in your Google Drive. You can create one using the "Export Benchmark Dataset" tab!
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       {/* Left: Files List */}
-                      <div className="md:col-span-1 border border-slate-800 rounded-lg bg-slate-950/70 p-2 space-y-1 max-h-72 overflow-y-auto">
+                      <div className="md:col-span-1 border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-950/70 p-2 space-y-1 max-h-72 overflow-y-auto">
                         <span className="text-[10px] font-mono uppercase text-slate-500 px-2 py-1 block">
                           Spreadsheets ({sheetsList.length})
                         </span>
@@ -568,8 +580,8 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
                             onClick={() => setSelectedSheetId(file.id)}
                             className={`w-full text-left px-3 py-2 rounded text-xs transition-colors flex items-center justify-between gap-2 ${
                               selectedSheetId === file.id
-                                ? 'bg-emerald-950/60 border border-emerald-600/60 text-emerald-200'
-                                : 'hover:bg-slate-800/60 text-slate-300'
+                                ? 'bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-600/60 text-emerald-900 dark:text-emerald-200 font-semibold'
+                                : 'hover:bg-slate-200/60 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-300'
                             }`}
                           >
                             <span className="truncate">{file.name}</span>
@@ -579,18 +591,20 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
                       </div>
 
                       {/* Right: Selected Sheet Viewer */}
-                      <div className="md:col-span-2 border border-slate-800 rounded-lg bg-slate-950/70 p-4 space-y-3">
+                      <div className="md:col-span-2 border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-950/70 p-4 space-y-3">
                         {isLoadingDetails ? (
-                          <div className="text-center py-8 text-xs text-slate-400 font-mono flex items-center justify-center gap-2">
-                            <RefreshCw className="w-4 h-4 animate-spin text-emerald-400" />
+                          <div className="text-center py-8 text-xs text-slate-500 dark:text-slate-400 font-mono flex items-center justify-center gap-2">
+                            <RefreshCw className="w-4 h-4 animate-spin text-emerald-600 dark:text-emerald-400" />
                             Fetching spreadsheet metadata...
                           </div>
                         ) : sheetDetails ? (
                           <>
-                            <div className="flex items-start justify-between gap-3 border-b border-slate-800 pb-3">
+                            <div className="flex items-start justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
                               <div>
-                                <h4 className="text-sm font-semibold text-white">{sheetDetails.title}</h4>
-                                <div className="text-[11px] text-slate-400 font-mono mt-0.5">
+                                <h4 className="text-sm font-semibold text-[#002D72] dark:text-white">
+                                  {sheetDetails.title}
+                                </h4>
+                                <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
                                   Tabs: {sheetDetails.sheets.map((s) => s.title).join(', ')}
                                 </div>
                               </div>
@@ -598,7 +612,7 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
                                 href={sheetDetails.spreadsheetUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1.5 px-3 py-1 text-xs bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 rounded transition-colors"
+                                className="inline-flex items-center gap-1.5 px-3 py-1 text-xs bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-emerald-700 dark:text-emerald-400 border border-slate-300 dark:border-slate-700 rounded transition-colors whitespace-nowrap shrink-0 font-medium"
                               >
                                 <span>Open in Sheets</span>
                                 <ExternalLink className="w-3 h-3" />
@@ -615,10 +629,10 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
                                     setSelectedTabName(tab.title);
                                     if (selectedSheetId) loadRangeData(selectedSheetId, tab.title);
                                   }}
-                                  className={`px-2.5 py-1 text-xs rounded font-mono transition-colors whitespace-nowrap ${
+                                  className={`px-2.5 py-1 text-xs rounded font-mono transition-colors whitespace-nowrap shrink-0 ${
                                     selectedTabName === tab.title
                                       ? 'bg-emerald-600 text-white font-medium'
-                                      : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                                      : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
                                   }`}
                                 >
                                   {tab.title}
@@ -627,13 +641,13 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
                             </div>
 
                             {/* Cells Preview Table */}
-                            <div className="mt-2 border border-slate-800 rounded overflow-x-auto max-h-52 bg-slate-900/40">
+                            <div className="mt-2 border border-slate-200 dark:border-slate-800 rounded overflow-x-auto max-h-52 bg-white dark:bg-slate-900/40">
                               {isLoadingPreview ? (
-                                <div className="text-center py-6 text-xs text-slate-400 font-mono">
+                                <div className="text-center py-6 text-xs text-slate-500 dark:text-slate-400 font-mono">
                                   Loading cell values...
                                 </div>
                               ) : previewValues.length === 0 ? (
-                                <div className="text-center py-6 text-xs text-slate-400 font-mono">
+                                <div className="text-center py-6 text-xs text-slate-500 dark:text-slate-400 font-mono">
                                   No data found in range A1:H15
                                 </div>
                               ) : (
@@ -644,14 +658,14 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
                                         key={rIdx}
                                         className={
                                           rIdx === 0
-                                            ? 'bg-slate-950 font-bold text-emerald-400 border-b border-slate-800'
-                                            : 'border-b border-slate-800/50 hover:bg-slate-800/30'
+                                            ? 'bg-slate-100 dark:bg-slate-950 font-bold text-emerald-700 dark:text-emerald-400 border-b border-slate-200 dark:border-slate-800'
+                                            : 'border-b border-slate-200/70 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/30 text-slate-700 dark:text-slate-300'
                                         }
                                       >
                                         {row.map((cell, cIdx) => (
                                           <td
                                             key={cIdx}
-                                            className="px-2.5 py-1.5 truncate max-w-[140px] border-r border-slate-800/40"
+                                            className="px-2.5 py-1.5 truncate max-w-[140px] border-r border-slate-200/60 dark:border-slate-800/40"
                                           >
                                             {cell}
                                           </td>
@@ -677,13 +691,13 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
               {/* TAB 3: APPEND CUSTOM SKILL */}
               {activeTab === 'append' && (
                 <div className="space-y-4">
-                  <div className="bg-slate-900/60 border border-slate-800 rounded-lg p-5 space-y-4">
+                  <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-lg p-5 space-y-4">
                     <div>
-                      <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-                        <PlusCircle className="w-4 h-4 text-emerald-400" />
+                      <h3 className="text-sm font-semibold text-[#002D72] dark:text-white flex items-center gap-2">
+                        <PlusCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                         Append Custom Skill to Google Sheet
                       </h3>
-                      <p className="text-xs text-slate-400 mt-1">
+                      <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
                         Add a new historical or emergent technological skill directly to your chosen Google Sheet.
                       </p>
                     </div>
@@ -691,13 +705,13 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
                     {/* Target Sheet and Tab Selection */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-xs font-mono uppercase text-slate-400 mb-1">
+                        <label className="block text-xs font-mono uppercase text-slate-600 dark:text-slate-400 mb-1">
                           Target Google Sheet
                         </label>
                         <select
                           value={selectedSheetId || ''}
                           onChange={(e) => setSelectedSheetId(e.target.value)}
-                          className="w-full px-3 py-2 text-xs bg-slate-950 border border-slate-700 rounded text-slate-200 focus:outline-none focus:border-emerald-500 font-mono"
+                          className="w-full px-3 py-2 text-xs bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-slate-200 focus:outline-none focus:border-emerald-600 dark:focus:border-emerald-500 font-mono"
                         >
                           {sheetsList.length === 0 && <option value="">No sheets found</option>}
                           {sheetsList.map((f) => (
@@ -709,13 +723,13 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
                       </div>
 
                       <div>
-                        <label className="block text-xs font-mono uppercase text-slate-400 mb-1">
+                        <label className="block text-xs font-mono uppercase text-slate-600 dark:text-slate-400 mb-1">
                           Target Tab
                         </label>
                         <select
                           value={selectedTabName}
                           onChange={(e) => setSelectedTabName(e.target.value)}
-                          className="w-full px-3 py-2 text-xs bg-slate-950 border border-slate-700 rounded text-slate-200 focus:outline-none focus:border-emerald-500 font-mono"
+                          className="w-full px-3 py-2 text-xs bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-slate-200 focus:outline-none focus:border-emerald-600 dark:focus:border-emerald-500 font-mono"
                         >
                           {sheetDetails?.sheets.map((s) => (
                             <option key={s.sheetId} value={s.title}>
@@ -729,7 +743,7 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
                     {/* Skill Form Fields */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                       <div>
-                        <label className="block text-xs font-mono uppercase text-slate-400 mb-1">
+                        <label className="block text-xs font-mono uppercase text-slate-600 dark:text-slate-400 mb-1">
                           Skill Name
                         </label>
                         <input
@@ -737,18 +751,18 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
                           value={newSkillName}
                           onChange={(e) => setNewSkillName(e.target.value)}
                           placeholder="e.g., Quantum Algorithm Auditor"
-                          className="w-full px-3 py-2 text-xs bg-slate-950 border border-slate-700 rounded text-slate-200 focus:outline-none focus:border-emerald-500"
+                          className="w-full px-3 py-2 text-xs bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-slate-200 focus:outline-none focus:border-emerald-600 dark:focus:border-emerald-500"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-xs font-mono uppercase text-slate-400 mb-1">
+                        <label className="block text-xs font-mono uppercase text-slate-600 dark:text-slate-400 mb-1">
                           Industrial Era
                         </label>
                         <select
                           value={newSkillEra}
                           onChange={(e) => setNewSkillEra(e.target.value)}
-                          className="w-full px-3 py-2 text-xs bg-slate-950 border border-slate-700 rounded text-slate-200 focus:outline-none focus:border-emerald-500"
+                          className="w-full px-3 py-2 text-xs bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-slate-200 focus:outline-none focus:border-emerald-600 dark:focus:border-emerald-500"
                         >
                           <option value="era-1">Era 1 (1760-1840: Steam & Mechanization)</option>
                           <option value="era-2">Era 2 (1870-1914: Electricity & Assembly)</option>
@@ -758,7 +772,7 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
                       </div>
 
                       <div>
-                        <label className="block text-xs font-mono uppercase text-slate-400 mb-1">
+                        <label className="block text-xs font-mono uppercase text-slate-600 dark:text-slate-400 mb-1">
                           Category / Classification
                         </label>
                         <input
@@ -766,18 +780,18 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
                           value={newSkillCategory}
                           onChange={(e) => setNewSkillCategory(e.target.value)}
                           placeholder="e.g., Cognitive Synthesis"
-                          className="w-full px-3 py-2 text-xs bg-slate-950 border border-slate-700 rounded text-slate-200 focus:outline-none focus:border-emerald-500"
+                          className="w-full px-3 py-2 text-xs bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-slate-200 focus:outline-none focus:border-emerald-600 dark:focus:border-emerald-500"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-xs font-mono uppercase text-slate-400 mb-1">
+                        <label className="block text-xs font-mono uppercase text-slate-600 dark:text-slate-400 mb-1">
                           Automation Status
                         </label>
                         <select
                           value={newSkillStatus}
                           onChange={(e) => setNewSkillStatus(e.target.value)}
-                          className="w-full px-3 py-2 text-xs bg-slate-950 border border-slate-700 rounded text-slate-200 focus:outline-none focus:border-emerald-500"
+                          className="w-full px-3 py-2 text-xs bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-slate-200 focus:outline-none focus:border-emerald-600 dark:focus:border-emerald-500"
                         >
                           <option value="emergent">Emergent (Low Machine Replacement)</option>
                           <option value="transformed">Transformed (Augmented by Machine)</option>
@@ -786,7 +800,7 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
                       </div>
 
                       <div className="sm:col-span-2">
-                        <label className="block text-xs font-mono uppercase text-slate-400 mb-1">
+                        <label className="block text-xs font-mono uppercase text-slate-600 dark:text-slate-400 mb-1">
                           Displacement Driver / Catalytic Tech
                         </label>
                         <input
@@ -794,12 +808,12 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
                           value={newSkillDriver}
                           onChange={(e) => setNewSkillDriver(e.target.value)}
                           placeholder="e.g., Foundation models, automated symbolic verification, multi-agent frameworks"
-                          className="w-full px-3 py-2 text-xs bg-slate-950 border border-slate-700 rounded text-slate-200 focus:outline-none focus:border-emerald-500"
+                          className="w-full px-3 py-2 text-xs bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-slate-200 focus:outline-none focus:border-emerald-600 dark:focus:border-emerald-500"
                         />
                       </div>
 
                       <div className="sm:col-span-2">
-                        <label className="block text-xs font-mono uppercase text-slate-400 mb-1">
+                        <label className="block text-xs font-mono uppercase text-slate-600 dark:text-slate-400 mb-1">
                           Cognitive vs Physical Load Shift
                         </label>
                         <input
@@ -807,19 +821,22 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
                           value={newSkillShift}
                           onChange={(e) => setNewSkillShift(e.target.value)}
                           placeholder="e.g., Shifts from routine coding to strategic goal specification and verification"
-                          className="w-full px-3 py-2 text-xs bg-slate-950 border border-slate-700 rounded text-slate-200 focus:outline-none focus:border-emerald-500"
+                          className="w-full px-3 py-2 text-xs bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-slate-200 focus:outline-none focus:border-emerald-600 dark:focus:border-emerald-500"
                         />
                       </div>
                     </div>
 
-                    <div className="pt-3 flex items-center justify-between border-t border-slate-800">
-                      <span className="text-xs text-slate-400">
-                        Target tab: <span className="font-mono text-emerald-400">{selectedTabName || 'None'}</span>
+                    <div className="pt-3 flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 dark:border-slate-800">
+                      <span className="text-xs text-slate-500 dark:text-slate-400">
+                        Target tab:{' '}
+                        <span className="font-mono text-emerald-700 dark:text-emerald-400 font-semibold">
+                          {selectedTabName || 'None'}
+                        </span>
                       </span>
                       <button
                         onClick={() => setShowAppendConfirm(true)}
                         disabled={isAppending || !newSkillName.trim() || !selectedSheetId}
-                        className="inline-flex items-center gap-2 px-5 py-2 text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg shadow-md transition-all active:scale-95 disabled:opacity-50"
+                        className="inline-flex items-center gap-2 px-5 py-2 text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg shadow-md transition-all active:scale-95 disabled:opacity-50 whitespace-nowrap shrink-0"
                       >
                         {isAppending ? (
                           <>
@@ -837,8 +854,8 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
                   </div>
 
                   {appendSuccess && (
-                    <div className="p-3 bg-emerald-950/40 border border-emerald-600/60 rounded-lg flex items-center gap-2 text-xs text-emerald-300">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-600/60 rounded-lg flex items-center gap-2 text-xs text-emerald-800 dark:text-emerald-300">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                       <span>{appendSuccess}</span>
                     </div>
                   )}
@@ -850,24 +867,25 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
 
         {/* User Confirmation Dialog for Destructive / Mutating Operation (Export) */}
         {showExportConfirm && (
-          <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-150">
-            <div className="w-full max-w-md bg-[#0d1524] border border-slate-700 rounded-xl p-5 shadow-2xl space-y-4">
+          <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-slate-950/60 dark:bg-black/80 backdrop-blur-sm animate-in fade-in duration-150">
+            <div className="w-full max-w-md bg-white dark:bg-[#0d1524] border border-slate-200 dark:border-slate-700 rounded-xl p-5 shadow-2xl space-y-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
+                <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-500/20 flex items-center justify-center text-emerald-700 dark:text-emerald-400 shrink-0">
                   <FileSpreadsheet className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-semibold text-white">Create Google Sheet?</h4>
-                  <p className="text-xs text-slate-400">Confirmation required</p>
+                  <h4 className="text-sm font-semibold text-[#002D72] dark:text-white">Create Google Sheet?</h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Confirmation required</p>
                 </div>
               </div>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                This will create a new Google Sheet named <strong className="text-emerald-400">"{exportTitle}"</strong> in your Google Drive and populate it with 3 tabs containing full skills dossiers and country trajectories.
+              <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
+                This will create a new Google Sheet named{' '}
+                <strong className="text-emerald-700 dark:text-emerald-400">"{exportTitle}"</strong> in your Google Drive and populate it with 3 tabs containing full skills dossiers and country trajectories.
               </p>
               <div className="flex items-center justify-end gap-3 pt-2">
                 <button
                   onClick={() => setShowExportConfirm(false)}
-                  className="px-4 py-2 text-xs text-slate-400 hover:text-white hover:bg-slate-800 rounded transition-colors"
+                  className="px-4 py-2 text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded transition-colors"
                 >
                   Cancel
                 </button>
@@ -884,24 +902,28 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
 
         {/* User Confirmation Dialog for Mutating Operation (Append) */}
         {showAppendConfirm && (
-          <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-150">
-            <div className="w-full max-w-md bg-[#0d1524] border border-slate-700 rounded-xl p-5 shadow-2xl space-y-4">
+          <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-slate-950/60 dark:bg-black/80 backdrop-blur-sm animate-in fade-in duration-150">
+            <div className="w-full max-w-md bg-white dark:bg-[#0d1524] border border-slate-200 dark:border-slate-700 rounded-xl p-5 shadow-2xl space-y-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
+                <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-500/20 flex items-center justify-center text-emerald-700 dark:text-emerald-400 shrink-0">
                   <PlusCircle className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-semibold text-white">Append Row to Google Sheet?</h4>
-                  <p className="text-xs text-slate-400">Confirmation required</p>
+                  <h4 className="text-sm font-semibold text-[#002D72] dark:text-white">
+                    Append Row to Google Sheet?
+                  </h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Confirmation required</p>
                 </div>
               </div>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Are you sure you want to append skill <strong className="text-emerald-400">"{newSkillName}"</strong> to sheet tab <strong className="text-white">"{selectedTabName}"</strong>? This will insert a new row into your Google Sheet.
+              <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
+                Are you sure you want to append skill{' '}
+                <strong className="text-emerald-700 dark:text-emerald-400">"{newSkillName}"</strong> to sheet tab{' '}
+                <strong className="text-slate-900 dark:text-white">"{selectedTabName}"</strong>? This will insert a new row into your Google Sheet.
               </p>
               <div className="flex items-center justify-end gap-3 pt-2">
                 <button
                   onClick={() => setShowAppendConfirm(false)}
-                  className="px-4 py-2 text-xs text-slate-400 hover:text-white hover:bg-slate-800 rounded transition-colors"
+                  className="px-4 py-2 text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded transition-colors"
                 >
                   Cancel
                 </button>
@@ -917,11 +939,11 @@ export const GoogleSheetsIntegrationModal: React.FC<GoogleSheetsIntegrationModal
         )}
 
         {/* Modal Footer */}
-        <div className="px-6 py-3 border-t border-slate-800 bg-[#080d17] flex items-center justify-between text-xs text-slate-500 font-mono">
+        <div className="px-6 py-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#080d17] flex items-center justify-between text-xs text-slate-500 font-mono">
           <span>Google Drive & Sheets API · Scopes Authorized</span>
           <button
             onClick={onClose}
-            className="px-4 py-1.5 text-xs text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 rounded transition-colors"
+            className="px-4 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded transition-colors font-semibold"
           >
             Close
           </button>

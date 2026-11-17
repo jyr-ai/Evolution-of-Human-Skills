@@ -1,35 +1,104 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-display: 'Cinzel', serif;
-  --font-serif: 'Newsreader', Georgia, serif;
-  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 }
 
 :root {
-  color-scheme: dark;
+  --primary-blue: #002D72;
+  --secondary-blue: #0056B3;
+  --primary-orange: #F47E2D;
+  --secondary-orange: #FF6B35;
+  --gradient-primary: linear-gradient(135deg, #002D72 0%, #0056B3 100%);
+  --gradient-secondary: linear-gradient(135deg, #F47E2D 0%, #FF6B35 100%);
+  --gradient-hero: linear-gradient(135deg, rgba(0, 45, 114, 0.92) 0%, rgba(0, 86, 179, 0.84) 100%);
+  --gradient-subtle: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   font-family: var(--font-sans);
-  background-color: #080c14;
-  color: #f1f5f9;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom subtle scrollbar */
+/* DSSG NYC Accessible Focus Ring */
+:focus-visible {
+  outline: 2px solid #0056B3;
+  outline-offset: 2px;
+}
+
+.dark :focus-visible {
+  outline-color: #60a5fa;
+}
+
+/* DSSG NYC Utility Classes */
+.dssg-btn-primary {
+  background: var(--gradient-primary);
+  color: #ffffff;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.dssg-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 18px -4px rgba(0, 45, 114, 0.32);
+}
+
+.dssg-btn-secondary {
+  background: var(--gradient-secondary);
+  color: #ffffff;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.dssg-btn-secondary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 18px -4px rgba(244, 126, 45, 0.35);
+}
+
+.dssg-card-hover {
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s ease;
+}
+.dssg-card-hover:hover {
+  transform: translateY(-3px);
+}
+
+/* Custom subtle scrollbars for Light and Dark modes */
 ::-webkit-scrollbar {
   width: 7px;
   height: 7px;
 }
 ::-webkit-scrollbar-track {
-  background: #080c14;
+  background: #f1f5f9;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: #cbd5e1;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #0b1120;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #1e293b;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
   background: #334155;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
