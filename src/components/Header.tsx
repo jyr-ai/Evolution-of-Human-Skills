@@ -10,6 +10,7 @@ interface HeaderProps {
   onSelectTab: (tab: NavTab) => void;
   onOpenBrief: () => void;
   onOpenSheets: () => void;
+  sheetsEnabled?: boolean;
   onOpenEmbed: () => void;
   mainMode: MainMode;
   onChangeMainMode: (mode: MainMode) => void;
@@ -20,6 +21,7 @@ export const Header: React.FC<HeaderProps> = ({
   onSelectTab,
   onOpenBrief,
   onOpenSheets,
+  sheetsEnabled = false,
   onOpenEmbed,
   mainMode,
   onChangeMainMode,
@@ -161,11 +163,11 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             onClick={onOpenSheets}
             className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/80 hover:bg-emerald-100 dark:hover:bg-emerald-900 border border-emerald-200 dark:border-emerald-700/60 rounded-lg transition-all whitespace-nowrap shrink-0"
-            title="Open Google Sheets Integration"
+            title={sheetsEnabled ? 'Open Google Sheets Integration' : 'Download the dataset as CSV'}
           >
             <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-            <span className="hidden xl:inline">Google Sheets</span>
-            <span className="xl:hidden">Sheets</span>
+            <span className="hidden xl:inline">{sheetsEnabled ? 'Google Sheets' : 'Download CSV'}</span>
+            <span className="xl:hidden">{sheetsEnabled ? 'Sheets' : 'CSV'}</span>
           </button>
 
           <button

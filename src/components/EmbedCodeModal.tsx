@@ -22,7 +22,7 @@ interface EmbedCodeModalProps {
   currentYear: number;
 }
 
-const PUBLISHED_URL = 'https://ais-pre-ishopl677qbt6o55rifhvo-585790079879.us-east1.run.app';
+const PUBLISHED_URL = 'https://www.datadiplomats.org/research/evolution-of-human-skills/';
 
 const WIDGET_OPTIONS: { id: WidgetId; label: string }[] = [
   { id: 'constellation', label: 'Radial Work Map' },
@@ -50,7 +50,7 @@ export const EmbedCodeModal: React.FC<EmbedCodeModalProps> = ({
 }) => {
   const defaultOrigin =
     typeof window !== 'undefined' && !window.location.hostname.includes('localhost')
-      ? window.location.origin
+      ? `${window.location.origin}${import.meta.env.BASE_URL}`
       : PUBLISHED_URL;
 
   const [baseUrl, setBaseUrl] = useState<string>(defaultOrigin);
@@ -89,10 +89,10 @@ export const EmbedCodeModal: React.FC<EmbedCodeModalProps> = ({
     return params.toString();
   }, [embedClean, hideControls, embedTheme, selectedWidget, selectedEra, useCustomYear, customYear]);
 
-  const cleanBaseUrl = baseUrl.trim().replace(/\/+$/, '') || PUBLISHED_URL;
+  const cleanBaseUrl = baseUrl.trim() || PUBLISHED_URL;
   const fullEmbedUrl = `${cleanBaseUrl}?${queryParams}`;
   const localPreviewUrl =
-    typeof window !== 'undefined' ? `${window.location.origin}?${queryParams}` : fullEmbedUrl;
+    typeof window !== 'undefined' ? `${window.location.origin}${import.meta.env.BASE_URL}?${queryParams}` : fullEmbedUrl;
 
   const htmlCssSnippet = useMemo(() => {
     const widthRule = maxWidth === '100%' ? '100%' : maxWidth;

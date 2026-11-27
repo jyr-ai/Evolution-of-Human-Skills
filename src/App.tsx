@@ -18,7 +18,14 @@ import { INDUSTRIAL_ERAS } from './data/industrialErasData';
 import { STREAM_DATA } from './data/skillsNetworkData';
 import { SkillItem } from './types/history';
 import { ArrowUp, BookOpen, Layers, FileSpreadsheet, Code2, GraduationCap } from 'lucide-react';
-import { GoogleSheetsIntegrationModal } from './components/GoogleSheetsIntegrationModal';
+import { SiteBar } from './components/SiteBar';
+import { SHEETS_ENABLED } from './lib/features';
+import { downloadSkillsCsv } from './lib/dataExport';
+
+// Loaded only when Sheets sync is enabled, so Firebase stays out of the public bundle.
+const GoogleSheetsIntegrationModal = SHEETS_ENABLED
+  ? React.lazy(() => import('./components/GoogleSheetsIntegrationModal').then((m) => ({ default: m.GoogleSheetsIntegrationModal })))
+  : null;
 import { EmbedCodeModal } from './components/EmbedCodeModal';
 
 const VALID_WIDGETS: WidgetId[] = [
@@ -92,6 +99,19 @@ export default function App() {
   const [isSheetsOpen, setIsSheetsOpen] = useState<boolean>(false);
   const [isEmbedOpen, setIsEmbedOpen] = useState<boolean>(false);
   const isEmbedded = initialConfig.isEmbedded;
+
+  // Public build: the "Sheets" actions become a plain CSV download.
+  const openDataExport = () => (SHEETS_ENABLED ? setIsSheetsOpen(true) : downloadSkillsCsv());
+
+  // Keep ?year= and ?mode= in the address bar so a view can be shared.
+  useEffect(() => {
+    if (isEmbedded) return;
+    const params = new URLSearchParams(window.location.search);
+    params.set('year', String(currentYear));
+    params.set('mode', mainMode);
+    params.delete('era');
+    window.history.replaceState(null, '', `${window.location.pathname}?${params}${window.location.hash}`);
+  }, [currentYear, mainMode, isEmbedded]);
   const hideControls = initialConfig.hideControls;
 
   // Derive current era from currentYear
@@ -210,13 +230,16 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-white text-slate-900 dark:bg-[#0b1120] dark:text-slate-100 flex flex-col font-sans selection:bg-[#F47E2D]/20 selection:text-[#002D72] dark:selection:bg-[#F47E2D]/30 dark:selection:text-orange-200 transition-colors duration-200">
+      {!isEmbedded && <SiteBar />}
+
       {/* 3-Zone Top Navigation (hidden when ?embed=true) */}
       {!isEmbedded && (
         <Header
           activeTab={activeTab}
           onSelectTab={handleSelectTab}
           onOpenBrief={() => setIsBriefOpen(true)}
-          onOpenSheets={() => setIsSheetsOpen(true)}
+          onOpenSheets={openDataExport}
+          sheetsEnabled={SHEETS_ENABLED}
           onOpenEmbed={() => setIsEmbedOpen(true)}
           mainMode={mainMode}
           onChangeMainMode={(mode) => setMainMode(mode)}
@@ -321,11 +344,11 @@ export default function App() {
                   </button>
 
                   <button
-                    onClick={() => setIsSheetsOpen(true)}
+                    onClick={openDataExport}
                     className="px-4 py-2.5 text-xs font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/80 hover:bg-emerald-100 dark:hover:bg-emerald-900 border border-emerald-200 dark:border-emerald-700/80 rounded-lg transition-colors flex items-center gap-2 shadow-sm"
                   >
                     <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                    <span>Google Sheets Sync & Export</span>
+                    <span>{SHEETS_ENABLED ? 'Google Sheets Sync & Export' : 'Download Data (CSV)'}</span>
                   </button>
 
                   <button
@@ -448,10 +471,11 @@ export default function App() {
       />
 
       {/* Google Sheets Live Integration & Export Modal */}
-      <GoogleSheetsIntegrationModal
-        isOpen={isSheetsOpen}
-        onClose={() => setIsSheetsOpen(false)}
-      />
+      {GoogleSheetsIntegrationModal && isSheetsOpen && (
+        <React.Suspense fallback={null}>
+          <GoogleSheetsIntegrationModal isOpen={isSheetsOpen} onClose={() => setIsSheetsOpen(false)} />
+        </React.Suspense>
+      )}
 
       {/* HTML/CSS/JS Embed Code Generator Modal */}
       <EmbedCodeModal
@@ -494,11 +518,11 @@ export default function App() {
               </button>
               <span className="text-blue-300/40">·</span>
               <button
-                onClick={() => setIsSheetsOpen(true)}
+                onClick={openDataExport}
                 className="text-blue-100 hover:text-[#F47E2D] transition-colors flex items-center gap-1.5"
               >
                 <FileSpreadsheet className="w-3.5 h-3.5" />
-                <span>Google Sheets</span>
+                <span>{SHEETS_ENABLED ? 'Google Sheets' : 'Download CSV'}</span>
               </button>
               <span className="text-blue-300/40">·</span>
               <button
