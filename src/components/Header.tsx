@@ -1,8 +1,9 @@
 import React from 'react';
-import { BookOpen, Network, FileSpreadsheet, Code2, Sun, Moon } from 'lucide-react';
+import { BookOpen, Network, FileSpreadsheet, Code2, Sun, Moon, GraduationCap, Layers } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 export type NavTab = 'visual-lab' | 'timeline' | 'matrix' | 'transitions' | 'societal' | 'nations' | 'synthesis' | 'scholars';
+export type MainMode = 'visuals' | 'archive' | 'bibliography';
 
 interface HeaderProps {
   activeTab: NavTab;
@@ -10,8 +11,8 @@ interface HeaderProps {
   onOpenBrief: () => void;
   onOpenSheets: () => void;
   onOpenEmbed: () => void;
-  mainMode: 'visuals' | 'archive';
-  onChangeMainMode: (mode: 'visuals' | 'archive') => void;
+  mainMode: MainMode;
+  onChangeMainMode: (mode: MainMode) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -34,6 +35,7 @@ export const Header: React.FC<HeaderProps> = ({
             href="#"
             onClick={(e) => {
               e.preventDefault();
+              onChangeMainMode('visuals');
               onSelectTab('visual-lab');
             }}
             className="text-base sm:text-lg font-serif tracking-tight font-bold text-[#002D72] dark:text-white hover:text-[#F47E2D] dark:hover:text-[#F47E2D] transition-colors whitespace-nowrap shrink-0"
@@ -43,7 +45,7 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Zone 2: Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-5 text-xs font-sans font-medium text-slate-600 dark:text-slate-300">
+        <nav className="hidden lg:flex items-center gap-4 xl:gap-5 text-xs font-sans font-medium text-slate-600 dark:text-slate-300">
           <button
             onClick={() => {
               onChangeMainMode('visuals');
@@ -56,7 +58,7 @@ export const Header: React.FC<HeaderProps> = ({
             }`}
           >
             <Network className="w-3.5 h-3.5 text-[#F47E2D]" />
-            <span>Work Map & Lab</span>
+            <span>Work Map &amp; Lab</span>
           </button>
 
           <button
@@ -128,6 +130,21 @@ export const Header: React.FC<HeaderProps> = ({
           >
             AI Core
           </button>
+
+          <button
+            onClick={() => {
+              onChangeMainMode('bibliography');
+              onSelectTab('scholars');
+            }}
+            className={`flex items-center gap-1.5 py-1 transition-colors text-left whitespace-nowrap shrink-0 ${
+              mainMode === 'bibliography' || (mainMode === 'archive' && activeTab === 'scholars')
+                ? 'text-[#002D72] dark:text-[#F47E2D] font-semibold border-b-2 border-[#F47E2D]'
+                : 'hover:text-[#002D72] dark:hover:text-white'
+            }`}
+          >
+            <GraduationCap className="w-3.5 h-3.5 text-[#0056B3] dark:text-blue-400" />
+            <span>Bibliography</span>
+          </button>
         </nav>
 
         {/* Zone 3: Actions & Light/Dark Toggle */}
@@ -184,6 +201,55 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
         </div>
       </div>
+
+      {/* Responsive Mobile/Tablet Navigation Strip */}
+      <div className="lg:hidden border-t border-slate-200 dark:border-slate-800 bg-slate-50/90 dark:bg-[#080d17]/95 px-4 py-2 flex items-center gap-2 overflow-x-auto">
+        <button
+          onClick={() => {
+            onChangeMainMode('visuals');
+            onSelectTab('visual-lab');
+          }}
+          className={`px-3 py-1 rounded-md text-xs font-medium flex items-center gap-1.5 whitespace-nowrap shrink-0 transition-colors ${
+            mainMode === 'visuals'
+              ? 'dssg-btn-primary font-semibold'
+              : 'text-slate-600 dark:text-slate-300 hover:text-[#002D72] dark:hover:text-white'
+          }`}
+        >
+          <Network className="w-3.5 h-3.5" />
+          <span>Work Map &amp; Lab</span>
+        </button>
+
+        <button
+          onClick={() => {
+            onChangeMainMode('archive');
+            onSelectTab('timeline');
+          }}
+          className={`px-3 py-1 rounded-md text-xs font-medium flex items-center gap-1.5 whitespace-nowrap shrink-0 transition-colors ${
+            mainMode === 'archive'
+              ? 'dssg-btn-primary font-semibold'
+              : 'text-slate-600 dark:text-slate-300 hover:text-[#002D72] dark:hover:text-white'
+          }`}
+        >
+          <Layers className="w-3.5 h-3.5" />
+          <span>Historical Dossier</span>
+        </button>
+
+        <button
+          onClick={() => {
+            onChangeMainMode('bibliography');
+            onSelectTab('scholars');
+          }}
+          className={`px-3 py-1 rounded-md text-xs font-medium flex items-center gap-1.5 whitespace-nowrap shrink-0 transition-colors ${
+            mainMode === 'bibliography'
+              ? 'dssg-btn-secondary font-semibold'
+              : 'text-slate-600 dark:text-slate-300 hover:text-[#002D72] dark:hover:text-white'
+          }`}
+        >
+          <GraduationCap className="w-3.5 h-3.5" />
+          <span>Bibliography</span>
+        </button>
+      </div>
     </header>
   );
 };
+

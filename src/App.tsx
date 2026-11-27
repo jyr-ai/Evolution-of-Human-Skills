@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Header, NavTab } from './components/Header';
+import { Header, NavTab, MainMode } from './components/Header';
 import { TimelineController } from './components/TimelineController';
 import { TimelineNav } from './components/TimelineNav';
 import { EraHero } from './components/EraHero';
@@ -17,7 +17,7 @@ import { InteractiveTimelineExplorer } from './components/InteractiveTimelineExp
 import { INDUSTRIAL_ERAS } from './data/industrialErasData';
 import { STREAM_DATA } from './data/skillsNetworkData';
 import { SkillItem } from './types/history';
-import { ArrowUp, BookOpen, Layers, FileSpreadsheet, Code2 } from 'lucide-react';
+import { ArrowUp, BookOpen, Layers, FileSpreadsheet, Code2, GraduationCap } from 'lucide-react';
 import { GoogleSheetsIntegrationModal } from './components/GoogleSheetsIntegrationModal';
 import { EmbedCodeModal } from './components/EmbedCodeModal';
 
@@ -45,7 +45,7 @@ function getInitialEmbedParams() {
       hideControls: false,
       initialYear: 2024,
       initialWidget: 'constellation' as WidgetId,
-      initialMode: 'visuals' as 'visuals' | 'archive',
+      initialMode: 'visuals' as MainMode,
     };
   }
   const params = new URLSearchParams(window.location.search);
@@ -69,8 +69,12 @@ function getInitialEmbedParams() {
 
   const initialWidget: WidgetId =
     widgetParam && VALID_WIDGETS.includes(widgetParam) ? widgetParam : 'constellation';
-  const initialMode: 'visuals' | 'archive' =
-    modeParam === 'archive' ? 'archive' : 'visuals';
+  const initialMode: MainMode =
+    modeParam === 'archive'
+      ? 'archive'
+      : modeParam === 'bibliography'
+      ? 'bibliography'
+      : 'visuals';
 
   return { isEmbedded, hideControls, initialYear, initialWidget, initialMode };
 }
@@ -82,7 +86,7 @@ export default function App() {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<NavTab>('visual-lab');
   const [activeWidget, setActiveWidget] = useState<WidgetId>(initialConfig.initialWidget);
-  const [mainMode, setMainMode] = useState<'visuals' | 'archive'>(initialConfig.initialMode);
+  const [mainMode, setMainMode] = useState<MainMode>(initialConfig.initialMode);
   const [selectedSkill, setSelectedSkill] = useState<SkillItem | null>(null);
   const [isBriefOpen, setIsBriefOpen] = useState<boolean>(false);
   const [isSheetsOpen, setIsSheetsOpen] = useState<boolean>(false);
@@ -175,35 +179,33 @@ export default function App() {
     if (tab === 'visual-lab') {
       setMainMode('visuals');
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-      setMainMode('archive');
-      if (tab === 'timeline') {
-        const el = document.getElementById('interactive-timeline');
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
-        else {
-          const hero = document.getElementById('era-hero');
-          if (hero) hero.scrollIntoView({ behavior: 'smooth' });
-        }
-      } else if (tab === 'matrix') {
-        const el = document.getElementById('skill-matrix');
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
-      } else if (tab === 'transitions') {
-        const el = document.getElementById('transition-nodes');
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
-      } else if (tab === 'societal') {
-        const el = document.getElementById('societal-impact');
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
-      } else if (tab === 'nations') {
-        const el = document.getElementById('wealth-of-nations');
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
-      } else if (tab === 'synthesis') {
-        const el = document.getElementById('macro-synthesis');
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
-      } else if (tab === 'scholars') {
-        const el = document.getElementById('scholar-references');
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
-      }
+      return;
     }
+    if (tab === 'scholars') {
+      setMainMode('bibliography');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    setMainMode('archive');
+    setTimeout(() => {
+      const targetId =
+        tab === 'timeline'
+          ? 'interactive-timeline'
+          : tab === 'matrix'
+          ? 'skill-matrix'
+          : tab === 'transitions'
+          ? 'transition-nodes'
+          : tab === 'societal'
+          ? 'societal-impact'
+          : tab === 'nations'
+          ? 'wealth-of-nations'
+          : tab === 'synthesis'
+          ? 'macro-synthesis'
+          : 'era-hero';
+      const el = document.getElementById(targetId) || document.getElementById('era-hero');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }, 50);
   };
 
   return (
@@ -221,8 +223,8 @@ export default function App() {
         />
       )}
 
-      {/* Scrubbable Timeline Controller Bar (hidden only if ?controls=false) */}
-      {!hideControls && (
+      {/* Scrubbable Timeline Controller Bar (hidden when ?controls=false or in dedicated Bibliography view) */}
+      {!hideControls && mainMode !== 'bibliography' && (
         <TimelineController
           currentYear={currentYear}
           onYearChange={(year) => setCurrentYear(year)}
@@ -234,7 +236,13 @@ export default function App() {
       )}
 
       <main className="flex-1">
-        {mainMode === 'visuals' ? (
+        {mainMode === 'bibliography' ? (
+          <ScholarReferences
+            isStandaloneTab
+            onBackToVisuals={() => handleSelectTab('visual-lab')}
+            onOpenArchive={() => handleSelectTab('timeline')}
+          />
+        ) : mainMode === 'visuals' ? (
           /* PRIMARY VISUALIZATION SUITE: DSSG NYC CLEAN BANDS + LIGHT/DARK PARITY */
           <div className="space-y-6">
             <VisualLabDashboard
@@ -469,6 +477,14 @@ export default function App() {
             </div>
 
             <div className="flex flex-wrap items-center gap-4 font-medium">
+              <button
+                onClick={() => handleSelectTab('scholars')}
+                className="text-blue-100 hover:text-[#F47E2D] transition-colors flex items-center gap-1.5"
+              >
+                <GraduationCap className="w-3.5 h-3.5" />
+                <span>Bibliography</span>
+              </button>
+              <span className="text-blue-300/40">·</span>
               <button
                 onClick={() => setIsEmbedOpen(true)}
                 className="text-blue-100 hover:text-[#F47E2D] transition-colors flex items-center gap-1.5"

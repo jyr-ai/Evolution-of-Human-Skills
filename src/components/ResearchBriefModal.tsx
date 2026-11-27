@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { INDUSTRIAL_ERAS } from '../data/industrialErasData';
 import { COMMON_THREAD_SYNTHESIS, ENDURING_HUMAN_CORE, SCHOLAR_CITATIONS } from '../data/synthesisData';
+import { BIBLIOGRAPHY_SOURCES } from '../data/bibliographyData';
 import { X, Copy, Check, FileText, Code2, Download } from 'lucide-react';
 
 interface ResearchBriefModalProps {
@@ -60,6 +61,15 @@ ${era.winners.map((w) => `- *${w.name}*: ${w.whyAffected} Outcome: ${w.longTermO
 ${ENDURING_HUMAN_CORE.map(
   (c, i) => `${i + 1}. **${c.name}** (${c.archetype}): ${c.whyEnduring}\n   *AI Immunity:* ${c.aiImmunityRationale}`
 ).join('\n\n')}
+
+## Complete Harvard Bibliography (${BIBLIOGRAPHY_SOURCES.length} Sources)
+${[...BIBLIOGRAPHY_SOURCES]
+  .sort((a, b) => a.sortKey.localeCompare(b.sortKey))
+  .map(
+    (b, i) =>
+      `${i + 1}. ${b.harvardCitation}\n   - *Applied in:* ${b.whereUsedInApp.join('; ')}\n   - *Empirical Contribution:* ${b.dataPulledSummary}`
+  )
+  .join('\n\n')}
 `;
   };
 
@@ -71,11 +81,13 @@ ${ENDURING_HUMAN_CORE.map(
             title: 'Evolution of Human Skills Dataset',
             erasCount: INDUSTRIAL_ERAS.length,
             enduringCoreCount: ENDURING_HUMAN_CORE.length,
+            bibliographyCount: BIBLIOGRAPHY_SOURCES.length,
           },
           eras: INDUSTRIAL_ERAS,
           synthesis: COMMON_THREAD_SYNTHESIS,
           enduringCore: ENDURING_HUMAN_CORE,
           scholarCitations: SCHOLAR_CITATIONS,
+          harvardBibliography: BIBLIOGRAPHY_SOURCES,
         },
         null,
         2
