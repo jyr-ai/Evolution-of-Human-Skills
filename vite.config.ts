@@ -5,6 +5,9 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
+    // Served at datadiplomats.org/research/evolution-of-human-skills/ via a rewrite
+    // from the website's Vercel project, so assets must resolve under this path.
+    base: '/research/evolution-of-human-skills/',
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
